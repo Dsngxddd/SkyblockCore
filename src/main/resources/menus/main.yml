@@ -1,0 +1,42 @@
+title: "&8Island Menu"
+rows: 3
+items:
+  info:
+    slot: 4
+    material: PLAYER_HEAD
+    name: "&aYour Island"
+    lore:
+      - "&7Owner: &f{owner}"
+  home:
+    slot: 11
+    material: GRASS_BLOCK
+    name: "&aGo Home"
+    lore:
+      - "&7Teleport to your island."
+    action: "island:home"
+  create:
+    slot: 12
+    material: NETHER_STAR
+    name: "&aCreate Island"
+    lore:
+      - "&7Create a new island."
+    action: "island:create"
+  settings:
+    slot: 13
+    material: COMPARATOR
+    name: "&eSettings"
+    lore:
+      - "&7Open island settings."
+    action: "open:settings"
+  delete:
+    slot: 15
+    material: BARRIER
+    name: "&cDelete Island"
+    lore:
+      - "&7Delete your island."
+    action: "island:delete"
+  close:
+    slot: 22
+    material: ARROW
+    name: "&cClose"
+    action: "close"

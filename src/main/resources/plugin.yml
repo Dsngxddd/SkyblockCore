@@ -1,0 +1,16 @@
+name: Skyblock
+version: 0.3.0
+main: net.cengiz1.skyblock.SkyblockPlugin
+api-version: 1.21
+author: cengiz1x
+softdepend: [FastAsyncWorldEdit]
+commands:
+  island:
+    description: Island commands
+    usage: /island <create|home|delete|types|settings|help>
+    aliases: [is, sb]
+permissions:
+  skyblock.create:
+    default: true
+  skyblock.delete:
+    default: true

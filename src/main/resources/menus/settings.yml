@@ -1,0 +1,56 @@
+title: "&8Island Settings"
+rows: 3
+items:
+  pvp:
+    slot: 10
+    material: DIAMOND_SWORD
+    name: "&ePvP"
+    lore:
+      - "&7Status: {flag_pvp}"
+      - "&7Click to toggle."
+    action: "flag:PVP"
+  mobs:
+    slot: 11
+    material: ZOMBIE_HEAD
+    name: "&eMob Spawning"
+    lore:
+      - "&7Status: {flag_mob_spawning}"
+      - "&7Click to toggle."
+    action: "flag:MOB_SPAWNING"
+  creeper:
+    slot: 12
+    material: CREEPER_HEAD
+    name: "&eCreeper Explosions"
+    lore:
+      - "&7Status: {flag_creeper_explosion}"
+      - "&7Click to toggle."
+    action: "flag:CREEPER_EXPLOSION"
+  tnt:
+    slot: 13
+    material: TNT
+    name: "&eTNT Explosions"
+    lore:
+      - "&7Status: {flag_tnt_explosion}"
+      - "&7Click to toggle."
+    action: "flag:TNT_EXPLOSION"
+  fire:
+    slot: 14
+    material: FLINT_AND_STEEL
+    name: "&eFire Spread"
+    lore:
+      - "&7Status: {flag_fire_spread}"
+      - "&7Click to toggle."
+    action: "flag:FIRE_SPREAD"
+  visitor:
+    slot: 15
+    material: OAK_DOOR
+    name: "&eVisitor Interact"
+    lore:
+      - "&7Status: {flag_visitor_interact}"
+      - "&7Click to toggle."
+    action: "flag:VISITOR_INTERACT"
+  back:
+    slot: 22
+    material: ARROW
+    name: "&cBack"
+    action: "open:main"
