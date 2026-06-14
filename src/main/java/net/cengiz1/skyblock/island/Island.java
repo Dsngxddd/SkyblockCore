@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Island {
 
     private final UUID uniqueId;
-    private final UUID owner;
+    private UUID owner;
     private final String worldName;
     private final int gridIndex;
     private final int centerX;
@@ -64,6 +64,12 @@ public class Island {
 
     public UUID getOwner() {
         return owner;
+    }
+
+    /** Sahibi değiştirir (devir). Eşleme güncellemesi IslandManager'da yapılır. */
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+        this.dirty = true;
     }
 
     public String getWorldName() {

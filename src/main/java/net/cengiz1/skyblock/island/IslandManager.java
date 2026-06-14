@@ -113,6 +113,28 @@ public class IslandManager {
         this.ownerToIsland.put(island.getOwner(), island.getUniqueId());
     }
 
+    /** Bir oyuncunun üyesi olduğu adayı döner (sahip veya üye). */
+    public Island getByMember(UUID playerId) {
+        Island own = getByOwner(playerId);
+        if (own != null)
+            return own;
+        for (Island island : this.islandsById.values())
+            if (island.isMember(playerId))
+                return island;
+        return null;
+    }
+
+    /** Ada sahipliğini devreder. Eski sahip moderatör üye olur. */
+    public void transferOwnership(Island island, UUID newOwner) {
+        UUID oldOwner = island.getOwner();
+        this.ownerToIsland.remove(oldOwner);
+        island.removeMember(newOwner);
+        island.setOwner(newOwner);
+        island.setRole(oldOwner, IslandRole.MODERATOR);
+        this.ownerToIsland.put(newOwner, island.getUniqueId());
+        saveAsync(island);
+    }
+
     public void deleteIsland(Island island) {
         this.islandsById.remove(island.getUniqueId());
         this.ownerToIsland.remove(island.getOwner());
