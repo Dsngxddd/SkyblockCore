@@ -29,10 +29,10 @@ upgrades:
     slot: 12
     type: value
     levels:
-      1: { value: 50,  required-level: 0,  required-money: 0 }
-      2: { value: 80,  required-level: 8,  required-money: 10000 }
-      3: { value: 120, required-level: 20, required-money: 30000 }
-      4: { value: 160, required-level: 40, required-money: 75000 }
+      1: { value: 100, required-level: 0,  required-money: 0 }
+      2: { value: 140, required-level: 8,  required-money: 10000 }
+      3: { value: 180, required-level: 20, required-money: 30000 }
+      4: { value: 220, required-level: 40, required-money: 75000 }
 
   # Çiftlik ürünleri — value = mahsül katlama şansı (%). Olgun mahsul kırılınca.
   crop-growth:

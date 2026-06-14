@@ -1,23 +1,92 @@
-prefix: "&8[&bSkyblock&8] &r"
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  MESAJLAR — tüm yazılar buradan değiştirilebilir.             ║
+# ║  &  renk kodu olarak kullanılır. {..} yer tutuculardır.       ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+prefix: "&8[&bAda&8] &r"
 
 messages:
-  player-only: "&cThis command can only be used by players."
-  no-permission: "&cYou don't have permission to do that."
-  unknown-subcommand: "&cUnknown command. Use &e/island help&c."
-  help-header: "&bIsland commands:"
-  help-create: "&e/island create [type] &7- Create your island."
-  help-home: "&e/island home &7- Teleport to your island."
-  help-delete: "&e/island delete &7- Delete your island."
-  help-types: "&e/island types &7- List available island types."
-  help-settings: "&e/island settings &7- Open island settings."
-  invalid-schematic: "&cUnknown island type. Available: &e{types}"
-  types-header: "&bAvailable island types:"
-  types-entry: "&7- &e{key} &7({name}&7)"
-  already-have-island: "&cYou already have an island."
-  no-island: "&cYou don't have an island yet. Use &e/island create&c."
-  creating: "&7Creating your island..."
-  creating-in-progress: "&eYour island is already being created, please wait..."
-  create-failed: "&cSomething went wrong while creating your island."
-  created: "&aYour island has been created!"
-  teleporting: "&7Teleporting to your island..."
-  deleted: "&aYour island has been deleted."
+  # Genel
+  player-only: "&cBu komut yalnızca oyuncular tarafından kullanılabilir."
+  no-permission: "&cBunu yapmaya yetkin yok."
+  no-island-permission: "&cBunu yapmak için ada yetkin yok."
+  unknown-subcommand: "&cBilinmeyen komut. &e/ada yardım&c yazarak komutları gör."
+  player-not-found: "&c'{player}' adlı oyuncu bulunamadı."
+
+  # Ada temel
+  no-island: "&cHenüz bir adan yok. &e/ada oluştur&c ile kur."
+  already-have-island: "&cZaten bir adan var."
+  creating: "&7Adan oluşturuluyor..."
+  creating-in-progress: "&eAdan zaten oluşturuluyor, lütfen bekle..."
+  create-failed: "&cAda oluşturulurken bir hata oluştu."
+  created: "&aAdan oluşturuldu!"
+  invalid-schematic: "&cBilinmeyen ada tipi. Mevcut: &e{types}"
+  teleporting: "&7Adana ışınlanıyorsun..."
+  deleted: "&aAdan silindi."
+  must-be-on-island: "&cBunun için adanın içinde olmalısın."
+  spawn-set: "&aAda spawn noktası ayarlandı."
+
+  # Seviye
+  level-up: "&aTebrikler! Adan &e{level}. &aseviyeye yükseldi!"
+  level-info: "&7Ada Seviyesi: &e{level} &8| &7Puan: &e{points} &8| &7Sonraki: &e{next}"
+
+  # Davet / üyelik
+  usage-invite: "&cKullanım: /ada davet <isim>"
+  usage-kick: "&cKullanım: /ada at <isim>"
+  usage-transfer: "&cKullanım: /ada devret <isim>"
+  usage-ban: "&cKullanım: /ada ban <isim>"
+  usage-unban: "&cKullanım: /ada unban <isim>"
+  usage-trust: "&cKullanım: /ada trust <isim>"
+  usage-untrust: "&cKullanım: /ada untrust <isim>"
+  usage-role: "&cKullanım: /ada rol <isim> <rol>"
+  already-member: "&cBu oyuncu zaten adanda."
+  team-limit-reached: "&cÜye limitine ulaştın (&e{limit}&c). Sınır limitini yükselt."
+  invite-sent: "&a{player} adlı oyuncuyu adana davet ettin."
+  invite-received: "&e{player} &aseni adasına davet etti! Kabul etmek için &e{command}&a yaz."
+  invite-accepted: "&aDaveti kabul ettin, artık bir adan var!"
+  invite-denied: "&7Daveti reddettin."
+  no-invite: "&cGeçerli bir davetin yok."
+  member-joined: "&a{player} adaya katıldı!"
+  member-left: "&7{player} adadan ayrıldı."
+  owner-cannot-leave: "&cSahip adadan ayrılamaz. Önce &e/ada devret&c ile devret veya &e/ada sil&c ile sil."
+  left-island: "&7Adadan ayrıldın."
+  not-a-member: "&cBu oyuncu adanın üyesi değil."
+  cannot-kick-owner: "&cAda sahibini atamazsın."
+  cannot-manage-higher: "&cKendinden yüksek veya eşit roldeki üyeyi yönetemezsin."
+  kicked: "&a{player} adadan atıldı."
+  you-were-kicked: "&cAdadan atıldın."
+  transferred: "&aAda sahipliği {player} oyuncusuna devredildi."
+  received-ownership: "&aArtık adanın yeni sahibisin!"
+  cannot-ban-owner: "&cAda sahibini yasaklayamazsın."
+  banned: "&a{player} adadan yasaklandı."
+  unbanned: "&a{player} oyuncusunun yasağı kaldırıldı."
+  not-banned: "&cBu oyuncu yasaklı değil."
+  trusted: "&a{player} adana üye olarak eklendi."
+  you-were-trusted: "&aBir adaya üye olarak eklendin!"
+  untrusted: "&a{player} adandan çıkarıldı."
+  invalid-role: "&cGeçersiz rol. Seçenekler: &e{roles}"
+  role-set: "&a{player} oyuncusunun rolü {role} &aolarak ayarlandı."
+
+  # Uçuş / kilit
+  fly-on: "&aUçuş modu açıldı."
+  fly-off: "&7Uçuş modu kapatıldı."
+  island-locked: "&7Adan kilitlendi (ziyaretçiye kapalı)."
+  island-unlocked: "&aAdan açıldı (ziyaretçiye açık)."
+
+  # Bilgi
+  info-header: "&b&l— Ada Bilgisi —"
+  info-owner: "&7Sahip: &f{player}"
+  info-level: "&7Seviye: &e{level} &7(&e{points}&7 puan)"
+  info-members: "&7Üyeler: &e{count}&7/&e{limit}"
+  members-header: "&b&l— Ada Üyeleri —"
+  members-entry: "&7• &f{player} &8- {role}"
+
+  # Zaman
+  time-no-permission: "&cAda zamanını değiştirmek için iznin yok (VIP+)."
+
+  # Yükseltme
+  upgrade-success: "&aYükseltme başarılı!"
+  upgrade-max: "&eBu yükseltme zaten maksimum seviyede."
+  upgrade-need-level: "&cYeterli ada seviyen yok."
+  upgrade-need-money: "&cYeterli paran yok."
+  upgrade-failed: "&cYükseltme yapılamadı."

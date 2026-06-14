@@ -1,56 +1,80 @@
-title: "&8Island Settings"
-rows: 3
+# Ada ayarları menüsü — /ada ayarlar
+title: "&8Ada Ayarları"
+rows: 4
+type: normal
+
 items:
   pvp:
     slot: 10
     material: DIAMOND_SWORD
     name: "&ePvP"
     lore:
-      - "&7Status: {flag_pvp}"
-      - "&7Click to toggle."
+      - "&7Durum: {flag_pvp}"
+      - "&eDeğiştirmek için tıkla."
     action: "flag:PVP"
-  mobs:
+
+  mob:
     slot: 11
     material: ZOMBIE_HEAD
-    name: "&eMob Spawning"
+    name: "&eCanavar Doğması"
     lore:
-      - "&7Status: {flag_mob_spawning}"
-      - "&7Click to toggle."
+      - "&7Durum: {flag_mob_spawning}"
+      - "&eDeğiştirmek için tıkla."
     action: "flag:MOB_SPAWNING"
+
   creeper:
     slot: 12
     material: CREEPER_HEAD
-    name: "&eCreeper Explosions"
+    name: "&eCreeper Patlaması"
     lore:
-      - "&7Status: {flag_creeper_explosion}"
-      - "&7Click to toggle."
+      - "&7Durum: {flag_creeper_explosion}"
+      - "&eDeğiştirmek için tıkla."
     action: "flag:CREEPER_EXPLOSION"
+
   tnt:
     slot: 13
     material: TNT
-    name: "&eTNT Explosions"
+    name: "&eTNT Patlaması"
     lore:
-      - "&7Status: {flag_tnt_explosion}"
-      - "&7Click to toggle."
+      - "&7Durum: {flag_tnt_explosion}"
+      - "&eDeğiştirmek için tıkla."
     action: "flag:TNT_EXPLOSION"
+
   fire:
     slot: 14
     material: FLINT_AND_STEEL
-    name: "&eFire Spread"
+    name: "&eAteş Yayılması"
     lore:
-      - "&7Status: {flag_fire_spread}"
-      - "&7Click to toggle."
+      - "&7Durum: {flag_fire_spread}"
+      - "&eDeğiştirmek için tıkla."
     action: "flag:FIRE_SPREAD"
-  visitor:
+
+  ziyaretci:
     slot: 15
     material: OAK_DOOR
-    name: "&eVisitor Interact"
+    name: "&eZiyaretçi Etkileşimi"
     lore:
-      - "&7Status: {flag_visitor_interact}"
-      - "&7Click to toggle."
+      - "&7Durum: {flag_visitor_interact}"
+      - "&7(Sandık açma / eşya toplama)"
+      - "&eDeğiştirmek için tıkla."
     action: "flag:VISITOR_INTERACT"
-  back:
-    slot: 22
+
+  zaman:
+    slot: 16
+    material: CLOCK
+    name: "&bAda Zamanı"
+    lore:
+      - "&7Adanın zamanını sabitler; güneş"
+      - "&7seçilen vakitte kalır."
+      - ""
+      - "&7Şu anki: {time}"
+      - ""
+      - "&dSadece izinli (skyblock.time)."
+      - "&eSıradaki zamana geçmek için tıkla!"
+    action: "time"
+
+  geri:
+    slot: 31
     material: ARROW
-    name: "&cBack"
+    name: "&cGeri"
     action: "open:main"

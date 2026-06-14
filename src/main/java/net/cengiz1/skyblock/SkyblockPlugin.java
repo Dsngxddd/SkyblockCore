@@ -8,6 +8,7 @@ import net.cengiz1.skyblock.economy.NoEconomyHook;
 import net.cengiz1.skyblock.economy.VaultEconomyHook;
 import net.cengiz1.skyblock.invite.InviteManager;
 import net.cengiz1.skyblock.island.IslandManager;
+import net.cengiz1.skyblock.island.IslandTimeTask;
 import net.cengiz1.skyblock.island.RoleManager;
 import net.cengiz1.skyblock.level.BlockTrackListener;
 import net.cengiz1.skyblock.level.BlockValueManager;
@@ -80,6 +81,10 @@ public final class SkyblockPlugin extends JavaPlugin {
                 new UpgradeEffectListener(this.islandManager, this.upgradeManager), this);
 
         CommandRegistrar.register(this);
+
+        // Ada zamanı (gece/gündüz) uygulayıcısı — her 2 saniyede bir.
+        new IslandTimeTask(this, this.islandManager, this.settings)
+                .runTaskTimer(this, 40L, 40L);
 
         getLogger().info("Skyblock etkinleştirildi.");
     }

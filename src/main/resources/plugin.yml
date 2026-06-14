@@ -1,16 +1,17 @@
 name: Skyblock
-version: 0.3.0
+version: 0.4.0
 main: net.cengiz1.skyblock.SkyblockPlugin
 api-version: 1.21
 author: cengiz1x
-softdepend: [FastAsyncWorldEdit]
-commands:
-  island:
-    description: Island commands
-    usage: /island <create|home|delete|types|settings|help>
-    aliases: [is, sb]
+softdepend: [FastAsyncWorldEdit, Vault]
+
+# Ada komutu plugin.yml'de DEĞİL; config.yml'deki ad/alias'larla dinamik
+# olarak kaydedilir (bkz: command.name / command.aliases).
+
 permissions:
-  skyblock.create:
-    default: true
-  skyblock.delete:
-    default: true
+  skyblock.time:
+    description: Ada zamanını sabitleme izni (gece/gündüz)
+    default: op
+  skyblock.admin:
+    description: Skyblock yönetici izni
+    default: op

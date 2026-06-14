@@ -1,0 +1,39 @@
+# Yükseltme menüsü — /ada yükseltme
+# type: upgrades  -> öğeler upgrades.yml'den otomatik doldurulur.
+# Her yükseltmenin slotu/ikonu upgrades.yml'de tanımlıdır.
+title: "&8Yükseltme Menüsü"
+rows: 5
+type: upgrades
+
+# Yükseltilebilir öğelerin lore şablonu:
+upgrade-lore:
+  - ""
+  - "&7Şu anki: &a{current}"
+  - "&7Sıradaki: &a{next}"
+  - ""
+  - "&7Gerekli Seviye: &e{req_level}"
+  - "&7Gerekli Para: &e{req_money}"
+  - ""
+  - "&eYükseltmek için tıkla!"
+
+# Maksimuma ulaşmış yükseltmeler için lore:
+upgrade-lore-max:
+  - ""
+  - "&7Şu anki: &a{current}"
+  - ""
+  - "&a✔ Maksimum seviye!"
+
+items:
+  bilgi:
+    slot: 4
+    material: EXPERIENCE_BOTTLE
+    name: "&bAda Yükseltmeleri"
+    lore:
+      - "&7Ada Seviyesi: &e{level}"
+      - "&7Puan: &e{points}"
+
+  geri:
+    slot: 40
+    material: ARROW
+    name: "&cGeri"
+    action: "open:main"

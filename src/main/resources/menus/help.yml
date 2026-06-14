@@ -1,0 +1,30 @@
+# Yardım menüsü — /ada yardım
+title: "&8Yardım & Komutlar"
+rows: 3
+type: normal
+
+items:
+  yardim:
+    slot: 13
+    material: BOOK
+    name: "&aYardım & Komutlar"
+    lore:
+      - "&e/ada &7– Bu menüyü açar"
+      - "&e/ada git &7– Adana ışınlanırsın"
+      - "&e/ada oluştur &7– Yeni ada kurar"
+      - "&e/ada davet <isim> &7– Oyuncu davet eder"
+      - "&e/ada kabul &7– Daveti kabul eder"
+      - "&e/ada ayrıl &7– Adadan ayrılır"
+      - "&e/ada at <isim> &7– Üyeyi atar"
+      - "&e/ada devret <isim> &7– Sahipliği devreder"
+      - "&e/ada ayarlar &7– Ada ayarlarını açar"
+      - "&e/ada yükseltme &7– Ada yükseltmeleri"
+      - "&e/ada level &7– Ada seviyeni gösterir"
+      - "&e/ada ban/unban <isim> &7– Yasaklar/kaldırır"
+      - "&e/ada trust/untrust <isim> &7– Üye yetkisi"
+
+  kapat:
+    slot: 22
+    material: ARROW
+    name: "&cKapat"
+    action: "close"

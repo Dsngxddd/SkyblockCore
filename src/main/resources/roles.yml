@@ -1,0 +1,75 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  ADA ROLLERİ                                                    ║
+# ║  Rollerin görünen adlarını ve yetkilerini buradan ayarla.     ║
+# ║  Sahip (owner) her zaman tüm yetkilere sahiptir.              ║
+# ║                                                                ║
+# ║  Yetkiler: BLOCK_PLACE, BLOCK_BREAK, INTERACT, CONTAINER,     ║
+# ║  FARM, PICKUP_ITEMS, DROP_ITEMS, DAMAGE_MOBS, INVITE, KICK,   ║
+# ║  BAN, SET_HOME, SET_WARP, TOGGLE_SETTINGS, UPGRADE,           ║
+# ║  MANAGE_MEMBERS, FLY, DELETE_ISLAND, TRANSFER  ('*' = hepsi)  ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+roles:
+  visitor:
+    name: "&7Ziyaretçi"
+    permissions: []
+
+  farmer:
+    name: "&aÇiftçi"
+    permissions:
+      - FARM
+      - INTERACT
+
+  member:
+    name: "&fÜye"
+    permissions:
+      - BLOCK_PLACE
+      - BLOCK_BREAK
+      - INTERACT
+      - CONTAINER
+      - FARM
+      - PICKUP_ITEMS
+      - DROP_ITEMS
+      - DAMAGE_MOBS
+      - FLY
+
+  architect:
+    name: "&bMimar"
+    permissions:
+      - BLOCK_PLACE
+      - BLOCK_BREAK
+      - INTERACT
+      - CONTAINER
+      - FARM
+      - PICKUP_ITEMS
+      - DROP_ITEMS
+      - DAMAGE_MOBS
+      - FLY
+      - SET_HOME
+      - SET_WARP
+
+  moderator:
+    name: "&eModeratör"
+    permissions:
+      - BLOCK_PLACE
+      - BLOCK_BREAK
+      - INTERACT
+      - CONTAINER
+      - FARM
+      - PICKUP_ITEMS
+      - DROP_ITEMS
+      - DAMAGE_MOBS
+      - FLY
+      - SET_HOME
+      - SET_WARP
+      - INVITE
+      - KICK
+      - BAN
+      - TOGGLE_SETTINGS
+      - UPGRADE
+      - MANAGE_MEMBERS
+
+  owner:
+    name: "&6Sahip"
+    permissions:
+      - "*"

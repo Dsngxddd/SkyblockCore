@@ -1,42 +1,78 @@
-title: "&8Island Menu"
+# Ana ada menüsü — /ada
+title: "&8Ada Menüsü"
 rows: 3
+type: normal
+
 items:
-  info:
+  bilgi:
     slot: 4
     material: PLAYER_HEAD
-    name: "&aYour Island"
+    name: "&aAdan"
     lore:
-      - "&7Owner: &f{owner}"
-  home:
-    slot: 11
+      - "&7Sahip: &f{owner}"
+      - "&7Seviye: &e{level}"
+      - "&7Puan: &e{points}"
+      - "&7Sonraki seviye: &e{next_points}"
+      - "&7Üyeler: &e{members}&7/&e{team_limit}"
+
+  git:
+    slot: 10
     material: GRASS_BLOCK
-    name: "&aGo Home"
+    name: "&aAda Teleport"
     lore:
-      - "&7Teleport to your island."
-    action: "island:home"
-  create:
-    slot: 12
+      - "&eAdana ışınlanmak için tıkla!"
+    action: "island:git"
+
+  olustur:
+    slot: 11
     material: NETHER_STAR
-    name: "&aCreate Island"
+    name: "&aAda Oluştur"
     lore:
-      - "&7Create a new island."
-    action: "island:create"
-  settings:
-    slot: 13
+      - "&7Yeni bir ada kur."
+    action: "island:oluştur"
+
+  ayarlar:
+    slot: 12
     material: COMPARATOR
-    name: "&eSettings"
+    name: "&eAyarlar"
     lore:
-      - "&7Open island settings."
+      - "&eAda ayarlarını değiştirmek için tıkla!"
     action: "open:settings"
-  delete:
-    slot: 15
-    material: BARRIER
-    name: "&cDelete Island"
+
+  yukseltme:
+    slot: 13
+    material: EXPERIENCE_BOTTLE
+    name: "&bAda Yükseltme Menüsü"
     lore:
-      - "&7Delete your island."
-    action: "island:delete"
-  close:
+      - "&eYükseltmeler için tıkla!"
+    action: "open:upgrades"
+
+  bloklevelleri:
+    slot: 14
+    material: GOLD_BLOCK
+    name: "&6Blok Levelleri"
+    block-values: true
+
+  yardim:
+    slot: 15
+    material: BOOK
+    name: "&aYardım & Komutlar"
+    lore:
+      - "&7Komut listesini gör."
+    action: "open:help"
+
+  sil:
+    slot: 16
+    material: BARRIER
+    name: "&cAda Sil"
+    lore:
+      - "&7Adanı kalıcı olarak sil."
+    action: "island:sil"
+
+  kapat:
     slot: 22
     material: ARROW
-    name: "&cClose"
+    name: "&cKapat"
     action: "close"
+
+block-values-format: "&7• &f{block}: &e{value}"
