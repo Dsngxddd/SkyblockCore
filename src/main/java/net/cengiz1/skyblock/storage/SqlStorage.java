@@ -60,6 +60,7 @@ public class SqlStorage implements Storage {
         addColumnIfMissing("members", "TEXT");
         addColumnIfMissing("banned", "TEXT");
         addColumnIfMissing("upgrades", "TEXT");
+        addColumnIfMissing("server", "VARCHAR(64)");
     }
 
     private void addColumnIfMissing(String column, String type) {
@@ -103,35 +104,8 @@ public class SqlStorage implements Storage {
         List<Island> islands = new LinkedList<>();
         try (PreparedStatement statement = connection().prepareStatement("SELECT * FROM islands");
              ResultSet result = statement.executeQuery()) {
-            while (result.next()) {
-                Island island = new Island(
-                        UUID.fromString(result.getString("uuid")),
-                        UUID.fromString(result.getString("owner")),
-                        result.getString("world"),
-                        result.getInt("grid_index"),
-                        result.getInt("center_x"),
-                        result.getInt("center_y"),
-                        result.getInt("center_z"));
-                island.setHome(
-                        result.getDouble("home_x"),
-                        result.getDouble("home_y"),
-                        result.getDouble("home_z"),
-                        result.getFloat("home_yaw"),
-                        result.getFloat("home_pitch"));
-                island.loadFlags(result.getString("flags"));
-
-                island.setNameRaw(result.getString("name"));
-                island.setLockedRaw(result.getInt("locked") == 1);
-                island.setTimeRaw(IslandTime.fromString(result.getString("island_time")));
-                island.setPointsRaw(result.getDouble("points"));
-                island.setLevelRaw(result.getInt("level"));
-                island.loadMembers(result.getString("members"));
-                island.loadBanned(result.getString("banned"));
-                island.loadUpgrades(result.getString("upgrades"));
-
-                island.markClean();
-                islands.add(island);
-            }
+            while (result.next())
+                islands.add(mapRow(result));
         } catch (SQLException error) {
             plugin.getLogger().warning("Could not load islands: " + error.getMessage());
         }
@@ -139,14 +113,60 @@ public class SqlStorage implements Storage {
     }
 
     @Override
+    public synchronized Island load(UUID islandId) {
+        try (PreparedStatement statement = connection().prepareStatement("SELECT * FROM islands WHERE uuid = ?")) {
+            statement.setString(1, islandId.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next())
+                    return mapRow(result);
+            }
+        } catch (SQLException error) {
+            plugin.getLogger().warning("Could not load island " + islandId + ": " + error.getMessage());
+        }
+        return null;
+    }
+
+    /** Bir satırı Island nesnesine çevirir. */
+    private Island mapRow(ResultSet result) throws SQLException {
+        Island island = new Island(
+                UUID.fromString(result.getString("uuid")),
+                UUID.fromString(result.getString("owner")),
+                result.getString("world"),
+                result.getInt("grid_index"),
+                result.getInt("center_x"),
+                result.getInt("center_y"),
+                result.getInt("center_z"));
+        island.setHome(
+                result.getDouble("home_x"),
+                result.getDouble("home_y"),
+                result.getDouble("home_z"),
+                result.getFloat("home_yaw"),
+                result.getFloat("home_pitch"));
+        island.loadFlags(result.getString("flags"));
+
+        island.setNameRaw(result.getString("name"));
+        island.setLockedRaw(result.getInt("locked") == 1);
+        island.setTimeRaw(IslandTime.fromString(result.getString("island_time")));
+        island.setPointsRaw(result.getDouble("points"));
+        island.setLevelRaw(result.getInt("level"));
+        island.loadMembers(result.getString("members"));
+        island.loadBanned(result.getString("banned"));
+        island.loadUpgrades(result.getString("upgrades"));
+        island.setServerNameRaw(result.getString("server"));
+
+        island.markClean();
+        return island;
+    }
+
+    @Override
     public synchronized void save(Island island) {
         String columns = "uuid, owner, world, grid_index, center_x, center_y, center_z, " +
                 "home_x, home_y, home_z, home_yaw, home_pitch, flags, " +
-                "name, locked, island_time, points, level, members, banned, upgrades";
-        String placeholders = "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
+                "name, locked, island_time, points, level, members, banned, upgrades, server";
+        String placeholders = "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
         String updateAssignments = "owner=?, world=?, grid_index=?, center_x=?, center_y=?, center_z=?, " +
                 "home_x=?, home_y=?, home_z=?, home_yaw=?, home_pitch=?, flags=?, " +
-                "name=?, locked=?, island_time=?, points=?, level=?, members=?, banned=?, upgrades=?";
+                "name=?, locked=?, island_time=?, points=?, level=?, members=?, banned=?, upgrades=?, server=?";
 
         String sql = this.mysql
                 ? "INSERT INTO islands (" + columns + ") VALUES (" + placeholders + ") " +
@@ -191,6 +211,7 @@ public class SqlStorage implements Storage {
         statement.setString(i++, island.serializeMembers());
         statement.setString(i++, island.serializeBanned());
         statement.setString(i++, island.serializeUpgrades());
+        statement.setString(i++, island.getServerName());
         return i;
     }
 

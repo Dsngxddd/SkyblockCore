@@ -32,6 +32,10 @@ public class Island {
     private boolean locked;
     private IslandTime time = IslandTime.NORMAL;
 
+    // Proxy modülü: bu adanın fiziksel olarak barındığı backend sunucunun adı
+    // (Velocity/BungeeCord'daki sunucu adı). Proxy kapalıyken null kalabilir.
+    private String serverName;
+
     private double points;
     private int level;
 
@@ -164,6 +168,22 @@ public class Island {
 
     public void setLockedRaw(boolean locked) {
         this.locked = locked;
+    }
+
+    // ----- Proxy: barındıran sunucu -----
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+        this.dirty = true;
+    }
+
+    /** Storage yüklemesi için: dirty işaretlemeden ayarlar. */
+    public void setServerNameRaw(String serverName) {
+        this.serverName = serverName;
     }
 
     public IslandTime getTime() {

@@ -24,8 +24,14 @@ dependencies {
     // Vault (ekonomi) — opsiyonel, yalnızca derleme için.
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
 
+    // Gson — sunucu (Spigot/Paper) tarafından sağlanır; sadece derleme için.
+    compileOnly 'com.google.code.gson:gson:2.10.1'
+
     implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
     implementation 'com.mysql:mysql-connector-j:8.4.0'
+
+    // Proxy modülü — sunucular arası mesajlaşma için Redis istemcisi.
+    implementation 'redis.clients:jedis:5.2.0'
 }
 
 java {
