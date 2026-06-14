@@ -9,6 +9,11 @@ world:
   # Varsayılan ada boyutu (boyut yükseltmesi yoksa kullanılır).
   island-size: 100
 
+# ───────────── ADA SINIRI (BORDER) ─────────────
+# Oyuncu adaya girince ada sınırını gösteren (kişiye özel) bir dünya sınırı çizer.
+border:
+  enabled: true
+
 creation:
   max-concurrent: 3
   threads: 3
@@ -27,6 +32,7 @@ command:
   subcommands:
     menu: ["menu"]
     git: ["git", "go", "tp", "ışınlan", "home"]
+    ziyaret: ["ziyaret", "visit", "git-ada"]
     olustur: ["oluştur", "olustur", "create", "kur"]
     sil: ["sil", "delete", "kaldır"]
     davet: ["davet", "invite"]
@@ -48,6 +54,7 @@ command:
     kilit: ["kilit", "lock", "kapat"]
     bilgi: ["bilgi", "info"]
     uyeler: ["üyeler", "uyeler", "members"]
+    proxy: ["proxy", "durum"]
     yardim: ["yardım", "yardim", "help", "?"]
   # Davetlerin geçerlilik süresi (saniye).
   invite-expire-seconds: 120
@@ -87,3 +94,62 @@ storage:
     username: root
     password: ""
     ssl: false
+
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  PROXY MODÜLÜ (sunucular arası senkron)                        ║
+# ╚══════════════════════════════════════════════════════════════╝
+# Birden fazla skyblock backend sunucusunu Velocity/BungeeCord arkasında
+# çalıştırmak içindir. Tüm backend'ler AYNI MySQL'i paylaşmalıdır
+# (storage.type: mysql ve hepsinde aynı host/database).
+#
+# Çalışma şekli:
+#  - Her ada fiziksel olarak tek bir backend sunucuda barınır (oluşturulduğu yerde).
+#  - /ada git veya /ada ziyaret <oyuncu> ile, ada başka sunucudaysa oyuncu
+#    otomatik olarak doğru sunucuya gönderilir ve adasına ışınlanır.
+#  - Ada verisi değiştiğinde (üye, rol, bayrak, level) Redis üzerinden diğer
+#    sunuculara bildirilir; onlar da veriyi DB'den tazeler.
+#
+# NOT: Oyuncuların skyblock sunucularına dengeli dağıtımı (load-balancing)
+# lobi/proxy işidir; bu modül adayı, oyuncunun oluşturduğu sunucuda inşa eder.
+#
+# MİGRASYON (önemli): Tek sunucudan çoklu sunucuya geçiyorsan, var olan tüm
+# adalar zaten o tek sunucunun dünyasında fizikseldir. Proxy'yi açmadan ÖNCE
+# bu adaların DB'deki 'server' sütununu o sunucunun adıyla doldur (tek SQL:
+#   UPDATE islands SET server = 'skyblock-1' WHERE server IS NULL;).
+# Aksi halde 'server' boş bir adaya, ona ilk erişen sunucu kendini atar ve
+# blokları başka sunucuda olan oyuncu boş alana ışınlanabilir.
+proxy:
+  # Modül kapalıyken plugin tek sunucu gibi normal çalışır.
+  enabled: false
+
+  # Bu sunucunun Velocity/BungeeCord yapılandırmasındaki adı.
+  # HER backend sunucuda FARKLI olmalı (örn: skyblock-1, skyblock-2).
+  server-name: "skyblock-1"
+
+  # Spawn/lobi sunucusunun adı (ileride dönüş yönlendirmeleri için).
+  spawn-server: "spawn-1"
+
+  # Yeni adaların oluşturulacağı skyblock backend sunucusunun adı.
+  # Oyuncu BAŞKA bir sunucudayken (ör. spawn/lobi) /ada oluştur derse,
+  # önce bu sunucuya gönderilir ve ada ORADA oluşturulur.
+  # - Boş ("") bırakılırsa ada, komutun çalıştığı sunucuda oluşturulur.
+  # - Bu sunucunun server-name'i ile aynıysa yine yerel oluşturulur.
+  create-server: "skyblock-1"
+
+  # Oyuncu başka sunucuya gönderildikten sonra ışınlanma/oluşturma kaydının
+  # geçerli kalacağı süre (saniye).
+  pending-teleport-seconds: 30
+
+  # Sorun gidermek için konsola ayrıntılı log basar (yönlendirme, gelen mesajlar).
+  debug: false
+
+  # Sunucular arası anlık haberleşme için Redis bağlantısı.
+  # Tüm backend'ler AYNI Redis'e ve AYNI kanala bağlanmalıdır.
+  redis:
+    host: "localhost"
+    port: 6379
+    username: ""
+    password: ""
+    timeout-seconds: 2
+    # Senkron mesajlarının yayınlandığı kanal adı (tüm sunucularda aynı olmalı).
+    channel: "skyblock:proxy"

@@ -5,6 +5,7 @@ import net.cengiz1.skyblock.island.Island;
 import net.cengiz1.skyblock.island.IslandManager;
 import net.cengiz1.skyblock.island.IslandPermission;
 import net.cengiz1.skyblock.island.IslandRole;
+import net.cengiz1.skyblock.proxy.ProxyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -60,6 +61,7 @@ public class IslandCommand extends Command {
         switch (canonical) {
             case "menu":      openMenu(player, "main"); break;
             case "git":       home(player); break;
+            case "ziyaret":   visit(player, arg1); break;
             case "olustur":   create(player, arg1); break;
             case "sil":       delete(player); break;
             case "davet":     invite(player, arg1); break;
@@ -117,7 +119,43 @@ public class IslandCommand extends Command {
             plugin.getMessages().send(player, "no-island");
             return;
         }
+        // Proxy açık ve ada başka sunucudaysa oyuncuyu oraya yönlendir; aksi halde yerel ışınla.
+        ProxyManager proxy = plugin.getProxyManager();
+        if (proxy != null && proxy.handleTeleport(player, island))
+            return;
         plugin.getMessages().send(player, "teleporting");
+        plugin.getIslandManager().teleportHome(player, island);
+    }
+
+    private void visit(Player player, String targetName) {
+        if (targetName == null) {
+            plugin.getMessages().send(player, "usage-visit");
+            return;
+        }
+        OfflinePlayer target = resolveOffline(targetName);
+        if (target == null) {
+            plugin.getMessages().send(player, "player-not-found", "{player}", targetName);
+            return;
+        }
+        Island island = plugin.getIslandManager().getByMember(target.getUniqueId());
+        if (island == null) {
+            plugin.getMessages().send(player, "visit-no-island", "{player}", targetName);
+            return;
+        }
+        UUID playerId = player.getUniqueId();
+        if (island.isBanned(playerId)) {
+            plugin.getMessages().send(player, "visit-banned");
+            return;
+        }
+        if (island.isLocked() && !island.isMember(playerId)) {
+            plugin.getMessages().send(player, "visit-locked");
+            return;
+        }
+        // Ada başka sunucudaysa oyuncuyu oraya yönlendir; aksi halde yerel ışınla.
+        ProxyManager proxy = plugin.getProxyManager();
+        if (proxy != null && proxy.handleTeleport(player, island))
+            return;
+        plugin.getMessages().send(player, "visiting", "{player}", nameOf(island.getOwner()));
         plugin.getIslandManager().teleportHome(player, island);
     }
 
@@ -554,6 +592,7 @@ public class IslandCommand extends Command {
         switch (canonical) {
             case "davet": case "at": case "devret": case "ban":
             case "unban": case "trust": case "untrust": case "rol":
+            case "ziyaret":
                 return true;
             default:
                 return false;

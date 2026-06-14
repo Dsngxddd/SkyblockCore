@@ -17,6 +17,7 @@ public class SettingsManager {
     private int islandHeight;
     private int islandDistance;
     private int islandSize;
+    private boolean borderEnabled;
 
     private int maxConcurrentCreations;
     private int creationThreads;
@@ -34,6 +35,20 @@ public class SettingsManager {
     private String username;
     private String password;
     private boolean useSsl;
+
+    // ───────────── Proxy modülü ─────────────
+    private boolean proxyEnabled;
+    private boolean proxyDebug;
+    private String proxyServerName;
+    private String proxySpawnServer;
+    private String proxyCreateServer;
+    private int proxyPendingSeconds;
+    private String proxyRedisHost;
+    private int proxyRedisPort;
+    private String proxyRedisUsername;
+    private String proxyRedisPassword;
+    private int proxyRedisTimeout;
+    private String proxyRedisChannel;
 
     public SettingsManager(SkyblockPlugin plugin) {
         this.plugin = plugin;
@@ -74,6 +89,17 @@ public class SettingsManager {
         this.username = config.getString("storage.mysql.username", "root");
         this.password = config.getString("storage.mysql.password", "");
         this.useSsl = config.getBoolean("storage.mysql.ssl", false);
+
+        this.proxyEnabled = config.getBoolean("proxy.enabled", false);
+        this.proxyServerName = config.getString("proxy.server-name", "skyblock-1");
+        this.proxySpawnServer = config.getString("proxy.spawn-server", "spawn-1");
+        this.proxyPendingSeconds = Math.max(5, config.getInt("proxy.pending-teleport-seconds", 30));
+        this.proxyRedisHost = config.getString("proxy.redis.host", "localhost");
+        this.proxyRedisPort = config.getInt("proxy.redis.port", 6379);
+        this.proxyRedisUsername = config.getString("proxy.redis.username", "");
+        this.proxyRedisPassword = config.getString("proxy.redis.password", "");
+        this.proxyRedisTimeout = Math.max(1, config.getInt("proxy.redis.timeout-seconds", 2));
+        this.proxyRedisChannel = config.getString("proxy.redis.channel", "skyblock:proxy");
     }
 
     public String getWorldName() {
@@ -146,5 +172,47 @@ public class SettingsManager {
 
     public boolean isUseSsl() {
         return useSsl;
+    }
+
+    // ───────────── Proxy getter'ları ─────────────
+
+    public boolean isProxyEnabled() {
+        return proxyEnabled;
+    }
+
+    public String getProxyServerName() {
+        return proxyServerName;
+    }
+
+    public String getProxySpawnServer() {
+        return proxySpawnServer;
+    }
+
+    public int getProxyPendingSeconds() {
+        return proxyPendingSeconds;
+    }
+
+    public String getProxyRedisHost() {
+        return proxyRedisHost;
+    }
+
+    public int getProxyRedisPort() {
+        return proxyRedisPort;
+    }
+
+    public String getProxyRedisUsername() {
+        return proxyRedisUsername;
+    }
+
+    public String getProxyRedisPassword() {
+        return proxyRedisPassword;
+    }
+
+    public int getProxyRedisTimeout() {
+        return proxyRedisTimeout;
+    }
+
+    public String getProxyRedisChannel() {
+        return proxyRedisChannel;
     }
 }

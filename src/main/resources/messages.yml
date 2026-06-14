@@ -23,6 +23,14 @@ messages:
   invalid-schematic: "&cBilinmeyen ada tipi. Mevcut: &e{types}"
   teleporting: "&7Adana ışınlanıyorsun..."
   deleted: "&aAdan silindi."
+
+  # Ziyaret / proxy (sunucular arası)
+  usage-visit: "&cKullanım: /ada ziyaret <isim>"
+  visiting: "&7{player} adlı oyuncunun adasına ışınlanıyorsun..."
+  visit-no-island: "&c'{player}' adlı oyuncunun bir adası yok."
+  visit-locked: "&cBu ada ziyaretçilere kapalı."
+  visit-banned: "&cBu adadan yasaklandın."
+  proxy-sending: "&7Adanın bulunduğu sunucuya (&e{server}&7) gönderiliyorsun..."
   must-be-on-island: "&cBunun için adanın içinde olmalısın."
   spawn-set: "&aAda spawn noktası ayarlandı."
 

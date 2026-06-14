@@ -9,8 +9,12 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import net.cengiz1.skyblock.SkyblockPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -123,6 +127,28 @@ public class FaweSchematicService implements SchematicService {
                     .ignoreAirBlocks(false)
                     .build();
             Operations.complete(operation);
+        }
+    }
+
+    @Override
+    public boolean clearRegion(World bukkitWorld, int centerX, int centerZ, int half) {
+        if (!this.available)
+            return false;
+
+        com.sk89q.worldedit.world.World weWorld = BukkitAdapter.adapt(bukkitWorld);
+        int minY = bukkitWorld.getMinHeight();
+        int maxY = bukkitWorld.getMaxHeight() - 1;
+
+        BlockVector3 min = BlockVector3.at(centerX - half, minY, centerZ - half);
+        BlockVector3 max = BlockVector3.at(centerX + half, maxY, centerZ + half);
+
+        try (EditSession session = WorldEdit.getInstance().newEditSessionBuilder().world(weWorld).build()) {
+            Region region = new CuboidRegion(weWorld, min, max);
+            session.setBlocks(region, (Pattern) BlockTypes.AIR.getDefaultState());
+            return true;
+        } catch (Throwable error) {
+            plugin.getLogger().warning("Ada bölgesi temizlenemedi: " + error.getMessage());
+            return false;
         }
     }
 

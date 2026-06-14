@@ -2,6 +2,7 @@ package net.cengiz1.skyblock.island;
 
 import net.cengiz1.skyblock.SkyblockPlugin;
 import net.cengiz1.skyblock.config.SettingsManager;
+import net.cengiz1.skyblock.proxy.ProxyManager;
 import net.cengiz1.skyblock.schematic.SchematicDefinition;
 import net.cengiz1.skyblock.schematic.SchematicService;
 import net.cengiz1.skyblock.storage.Storage;
@@ -104,7 +105,16 @@ public class IslandCreationService {
                         index, centerX, centerY, centerZ);
                 island.setHome(centerX + offsetX, centerY + offsetY, centerZ + offsetZ, 0f, 0f);
 
+                // Proxy açıkken ada bu (yerel) sunucuda fiziksel olarak inşa edilir.
+                ProxyManager proxy = plugin.getProxyManager();
+                if (proxy != null && proxy.isEnabled())
+                    island.setServerNameRaw(proxy.getServerName());
+
                 this.storage.save(island);
+
+                // Diğer sunucular yeni adayı (ör. ziyaret için) öğrensin.
+                if (proxy != null && proxy.isEnabled())
+                    proxy.publishIslandUpdate(island.getUniqueId());
 
                 boolean pasted = false;
                 if (definition != null) {

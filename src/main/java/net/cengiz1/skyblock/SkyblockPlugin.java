@@ -16,6 +16,8 @@ import net.cengiz1.skyblock.level.LevelManager;
 import net.cengiz1.skyblock.listener.IslandFlagListener;
 import net.cengiz1.skyblock.menu.MenuListener;
 import net.cengiz1.skyblock.menu.MenuManager;
+import net.cengiz1.skyblock.proxy.ProxyListener;
+import net.cengiz1.skyblock.proxy.ProxyManager;
 import net.cengiz1.skyblock.storage.SqlStorage;
 import net.cengiz1.skyblock.storage.Storage;
 import net.cengiz1.skyblock.upgrade.UpgradeEffectListener;
@@ -38,6 +40,7 @@ public final class SkyblockPlugin extends JavaPlugin {
     private RoleManager roleManager;
     private InviteManager inviteManager;
     private EconomyHook economy;
+    private ProxyManager proxyManager;
 
     @Override
     public void onEnable() {
@@ -80,6 +83,12 @@ public final class SkyblockPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(
                 new UpgradeEffectListener(this.islandManager, this.upgradeManager), this);
 
+        // Proxy modülü (sunucular arası senkron). config'de proxy.enabled: false ise pasif kalır.
+        this.proxyManager = new ProxyManager(this);
+        this.proxyManager.start();
+        if (this.proxyManager.isEnabled())
+            getServer().getPluginManager().registerEvents(new ProxyListener(this.proxyManager), this);
+
         CommandRegistrar.register(this);
 
         // Ada zamanı (gece/gündüz) uygulayıcısı — her 2 saniyede bir.
@@ -91,6 +100,8 @@ public final class SkyblockPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (this.proxyManager != null)
+            this.proxyManager.stop();
         if (this.islandManager != null)
             this.islandManager.shutdown();
         if (this.storage != null)
@@ -168,5 +179,9 @@ public final class SkyblockPlugin extends JavaPlugin {
 
     public EconomyHook getEconomy() {
         return economy;
+    }
+
+    public ProxyManager getProxyManager() {
+        return proxyManager;
     }
 }
