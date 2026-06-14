@@ -10,10 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Ada komutunu config'deki ad ve alias'larla dinamik olarak Bukkit'in
- * CommandMap'ine kaydeder (plugin.yml'e bağlı kalmadan).
- */
 public final class CommandRegistrar {
 
     private CommandRegistrar() {
@@ -22,7 +18,6 @@ public final class CommandRegistrar {
     public static void register(SkyblockPlugin plugin) {
         SettingsManager settings = plugin.getSettings();
 
-        // alias -> kanonik alt komut çözümleyicisi
         Map<String, String> resolver = new LinkedHashMap<>();
         for (Map.Entry<String, List<String>> entry : settings.getSubcommandAliases().entrySet()) {
             String canonical = entry.getKey();
@@ -35,11 +30,11 @@ public final class CommandRegistrar {
 
         CommandMap commandMap = getCommandMap();
         if (commandMap == null) {
-            plugin.getLogger().severe("CommandMap alınamadı; ada komutu kaydedilemedi!");
+            plugin.getLogger().severe("Could not access the CommandMap; the island command was not registered!");
             return;
         }
         commandMap.register(plugin.getName().toLowerCase(), command);
-        plugin.getLogger().info("Ada komutu kaydedildi: /" + settings.getCommandName()
+        plugin.getLogger().info("Registered island command: /" + settings.getCommandName()
                 + " (" + String.join(", ", settings.getCommandAliases()) + ")");
     }
 

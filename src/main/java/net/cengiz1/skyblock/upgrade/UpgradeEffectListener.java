@@ -18,10 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Yükseltme etkilerini uygular: jeneratör blokları, mahsül katlama,
- * mob ganimet çarpanı ve spawner hızı.
- */
 public class UpgradeEffectListener implements Listener {
 
     private final IslandManager islandManager;
@@ -32,7 +28,6 @@ public class UpgradeEffectListener implements Listener {
         this.upgrades = upgrades;
     }
 
-    // ----- Jeneratör -----
     @EventHandler(ignoreCancelled = true)
     public void onForm(BlockFormEvent event) {
         Material formed = event.getNewState().getType();
@@ -48,7 +43,6 @@ public class UpgradeEffectListener implements Listener {
             event.getNewState().setType(picked);
     }
 
-    // ----- Mahsül katlama şansı -----
     @EventHandler(ignoreCancelled = true)
     public void onHarvest(BlockBreakEvent event) {
         BlockData data = event.getBlock().getBlockData();
@@ -73,7 +67,6 @@ public class UpgradeEffectListener implements Listener {
         }
     }
 
-    // ----- Mob ganimet çarpanı -----
     @EventHandler(ignoreCancelled = true)
     public void onDeath(EntityDeathEvent event) {
         Island island = this.islandManager.getIslandAt(event.getEntity().getLocation());
@@ -93,7 +86,6 @@ public class UpgradeEffectListener implements Listener {
         event.setDroppedExp(event.getDroppedExp() * multiplier);
     }
 
-    // ----- Spawner hızı -----
     @EventHandler(ignoreCancelled = true)
     public void onSpawnerSpawn(SpawnerSpawnEvent event) {
         if (!(event.getSpawner() instanceof CreatureSpawner))

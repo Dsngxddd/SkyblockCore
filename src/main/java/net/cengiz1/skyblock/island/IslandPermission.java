@@ -1,10 +1,5 @@
 package net.cengiz1.skyblock.island;
 
-/**
- * Ada içinde bir üyenin yapabileceği yetkiler. Her rolün hangi yetkilere
- * sahip olduğu {@link IslandRole} içinde tanımlıdır ve roles.yml ile
- * yeniden ayarlanabilir.
- */
 public enum IslandPermission {
 
     BLOCK_PLACE,

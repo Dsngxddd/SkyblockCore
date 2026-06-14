@@ -7,11 +7,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.TreeMap;
 
-/**
- * levels.yml dosyasını yükler ve puandan seviye hesaplar.
- * Her seviyeye ulaşmak için gereken TOPLAM puan tanımlıdır; tanımlı en yüksek
- * seviyeden sonrası 'auto' formülüyle üretilir.
- */
 public class LevelManager {
 
     private final SkyblockPlugin plugin;
@@ -22,7 +17,6 @@ public class LevelManager {
     private double autoStep;
     private double autoMultiplier;
 
-    // Güvenlik tavanı: sonsuz döngüyü önlemek için.
     private static final int LEVEL_CAP = 100000;
 
     public LevelManager(SkyblockPlugin plugin) {
@@ -57,7 +51,6 @@ public class LevelManager {
         this.autoMultiplier = config.getDouble("auto.multiplier", 1.15);
     }
 
-    /** Bir seviyeye ulaşmak için gereken toplam puan. */
     public double requiredPoints(int level) {
         if (level <= 0)
             return 0;
@@ -67,7 +60,7 @@ public class LevelManager {
         if (!this.autoEnabled || this.maxDefinedLevel == 0)
             return Double.MAX_VALUE;
         if (level <= this.maxDefinedLevel)
-            return Double.MAX_VALUE; // tanımlı aralıkta boşluk varsa erişilemez
+            return Double.MAX_VALUE;
 
         double total = this.requirements.get(this.maxDefinedLevel);
         double increment = this.autoStep;
@@ -78,7 +71,6 @@ public class LevelManager {
         return total;
     }
 
-    /** Verilen puana karşılık gelen seviye. */
     public int levelFromPoints(double points) {
         int level = 0;
         while (level < LEVEL_CAP) {
@@ -90,7 +82,6 @@ public class LevelManager {
         return level;
     }
 
-    /** Bir sonraki seviyeye geçmek için gereken toplam puan (yoksa -1). */
     public double pointsForNextLevel(int currentLevel) {
         double needed = requiredPoints(currentLevel + 1);
         return needed == Double.MAX_VALUE ? -1 : needed;

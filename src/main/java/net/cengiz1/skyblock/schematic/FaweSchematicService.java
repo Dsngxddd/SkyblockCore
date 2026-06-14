@@ -147,7 +147,7 @@ public class FaweSchematicService implements SchematicService {
             session.setBlocks(region, (Pattern) BlockTypes.AIR.getDefaultState());
             return true;
         } catch (Throwable error) {
-            plugin.getLogger().warning("Ada bölgesi temizlenemedi: " + error.getMessage());
+            plugin.getLogger().warning("Could not clear island region: " + error.getMessage());
             return false;
         }
     }

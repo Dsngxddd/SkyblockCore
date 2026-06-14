@@ -5,9 +5,6 @@ import org.bukkit.Material;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * Bir yükseltmenin tek bir seviyesi.
- */
 public class UpgradeLevel {
 
     private final int level;
@@ -15,7 +12,7 @@ public class UpgradeLevel {
     private final int requiredIslandLevel;
     private final double requiredMoney;
     private final Material icon;
-    private final Map<Material, Integer> chances; // sadece GENERATOR için
+    private final Map<Material, Integer> chances;
 
     public UpgradeLevel(int level, double value, int requiredIslandLevel, double requiredMoney,
                         Material icon, Map<Material, Integer> chances) {

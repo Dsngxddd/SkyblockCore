@@ -4,9 +4,6 @@ import org.bukkit.Material;
 
 import java.util.TreeMap;
 
-/**
- * Yükseltme tanımı (upgrades.yml içindeki tek bir giriş).
- */
 public class Upgrade {
 
     private final String key;
@@ -52,7 +49,6 @@ public class Upgrade {
         return this.levels.isEmpty() ? 1 : this.levels.lastKey();
     }
 
-    /** İstenen seviye yoksa en yakın alt tanımlı seviyeyi döner. */
     public UpgradeLevel getLevel(int level) {
         UpgradeLevel exact = this.levels.get(level);
         if (exact != null)

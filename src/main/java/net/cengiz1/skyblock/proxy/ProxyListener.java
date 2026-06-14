@@ -5,10 +5,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-/**
- * Oyuncu başka bir sunucudan adasına gelmek için yönlendirildiğinde,
- * giriş yaptığı an bekleyen ışınlanmayı tamamlar.
- */
 public class ProxyListener implements Listener {
 
     private final ProxyManager proxyManager;

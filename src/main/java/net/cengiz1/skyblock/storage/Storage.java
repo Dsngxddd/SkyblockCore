@@ -11,7 +11,6 @@ public interface Storage {
 
     Collection<Island> loadAll();
 
-    /** Tek bir adayı veritabanından (yeniden) yükler; yoksa null döner. Proxy senkronu için. */
     Island load(UUID islandId);
 
     void save(Island island);

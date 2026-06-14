@@ -5,10 +5,6 @@ import net.cengiz1.skyblock.config.SettingsManager;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-/**
- * Ada zamanı sabitlenmişse, ada içindeki oyunculara o saati gösterir;
- * ada dışına çıkınca normal döngüye döner.
- */
 public class IslandTimeTask extends BukkitRunnable {
 
     private final SkyblockPlugin plugin;

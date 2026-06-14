@@ -1,29 +1,27 @@
-# ╔══════════════════════════════════════════════════════════════╗
-# ║  SKYBLOCK ANA AYARLARI                                          ║
-# ╚══════════════════════════════════════════════════════════════╝
+# Main Skyblock settings.
+# New keys added in plugin updates are merged into this file automatically,
+# so your existing values are kept when you upgrade.
 
 world:
   name: islands
   island-height: 100
   island-distance: 250
-  # Varsayılan ada boyutu (boyut yükseltmesi yoksa kullanılır).
+  # Default island size, used when the size upgrade is not present.
   island-size: 100
 
-# ───────────── ADA SINIRI (BORDER) ─────────────
-# Oyuncu adaya girince ada sınırını gösteren (kişiye özel) bir dünya sınırı çizer.
+# Per-player world border drawn around an island when a player enters it.
 border:
   enabled: true
-  # Sınır rengi: BLUE (sabit/mavi), GREEN (yeşil) veya RED (kırmızı).
+  # Border color: BLUE, GREEN or RED.
   color: BLUE
 
-# ───────────── GENEL SPAWN ─────────────
-# Ada silinince (ve spawn'a dönüşte) oyuncunun ışınlanacağı nokta.
-# Hem proxy hem proxysiz sistemde geçerlidir.
-#  - Proxy AÇIKSA ve proxy.spawn-server bu sunucudan farklıysa: oyuncu önce o
-#    sunucuya gönderilir (oradaki spawn'a düşer); aşağıdaki koordinat kullanılmaz.
-#  - Proxy KAPALIYSA (veya spawn-server bu sunucuysa): aşağıdaki koordinata ışınlar.
-# world boş ("") ise ana dünyanın spawn'ı kullanılır.
-# Kolay yol: gitmesini istediğin yere gidip /ada anaspawn yaz.
+# Where players are teleported after their island is deleted (and on spawn return).
+# Works with and without the proxy module.
+#  - Proxy ON and proxy.spawn-server is a different server: the player is sent
+#    to that server (and lands on its spawn); the coordinates below are not used.
+#  - Proxy OFF (or spawn-server is this server): the player is teleported to the
+#    coordinates below. Leave world empty ("") to use the main world spawn.
+# Quick way: stand where you want and run /island anaspawn.
 spawn:
   world: ""
   x: 0.5
@@ -36,55 +34,51 @@ creation:
   max-concurrent: 3
   threads: 3
 
-# ───────────── KOMUT ─────────────
-# Ana komut adı ve alias'ları config'den ayarlanabilir.
-# Alt komut alias'ları da burada; soldaki anahtar sabit (kod tarafı),
-# sağdaki liste oyuncunun yazabileceği kelimelerdir.
+# Command name, aliases and sub-command words. The left key is the internal
+# name; the list on the right is what players may type.
 command:
-  name: ada
+  name: island
   aliases:
     - is
     - sb
-    - island
+    - ada
     - sky
   subcommands:
     menu: ["menu"]
-    git: ["git", "go", "tp", "ışınlan", "home"]
-    ziyaret: ["ziyaret", "visit", "git-ada"]
-    olustur: ["oluştur", "olustur", "create", "kur"]
-    sil: ["sil", "delete", "kaldır"]
-    davet: ["davet", "invite"]
-    kabul: ["kabul", "accept"]
-    reddet: ["reddet", "deny", "ret"]
-    ayril: ["ayrıl", "ayril", "leave"]
-    at: ["at", "kick", "çıkar", "cikar"]
-    devret: ["devret", "transfer"]
+    git: ["home", "go", "tp", "git", "ışınlan"]
+    ziyaret: ["visit", "ziyaret"]
+    olustur: ["create", "oluştur", "olustur", "kur"]
+    sil: ["delete", "sil", "kaldır"]
+    davet: ["invite", "davet"]
+    kabul: ["accept", "kabul"]
+    reddet: ["deny", "reddet", "ret"]
+    ayril: ["leave", "ayrıl", "ayril"]
+    at: ["kick", "at", "çıkar", "cikar"]
+    devret: ["transfer", "devret"]
     ban: ["ban", "yasakla"]
-    unban: ["unban", "yasaklama-kaldır", "bankaldir"]
+    unban: ["unban", "bankaldir"]
     trust: ["trust", "güven", "guven"]
     untrust: ["untrust"]
-    rol: ["rol", "role", "setrole"]
-    ayarlar: ["ayarlar", "settings", "ayar"]
-    yukseltme: ["yükseltme", "yukseltme", "upgrade", "yukselt"]
+    rol: ["role", "rol", "setrole"]
+    ayarlar: ["settings", "ayarlar", "ayar"]
+    yukseltme: ["upgrade", "yükseltme", "yukseltme", "yukselt"]
     level: ["level", "seviye", "lvl"]
     setspawn: ["setspawn", "sethome", "spawnayarla"]
-    ucus: ["uçuş", "ucus", "fly"]
-    kilit: ["kilit", "lock", "kapat"]
-    bilgi: ["bilgi", "info"]
-    uyeler: ["üyeler", "uyeler", "members"]
-    proxy: ["proxy", "durum"]
-    anaspawn: ["anaspawn", "genelspawn", "setanaspawn"]
-    yardim: ["yardım", "yardim", "help", "?"]
-  # Davetlerin geçerlilik süresi (saniye).
+    ucus: ["fly", "uçuş", "ucus"]
+    kilit: ["lock", "kilit", "kapat"]
+    bilgi: ["info", "bilgi"]
+    uyeler: ["members", "üyeler", "uyeler"]
+    proxy: ["proxy", "status"]
+    anaspawn: ["anaspawn", "setglobalspawn", "genelspawn"]
+    yardim: ["help", "yardım", "yardim", "?"]
+  # How long an invite stays valid, in seconds.
   invite-expire-seconds: 120
 
-# ───────────── EKONOMI ─────────────
 economy:
-  # Yükseltmelerde 'required-money' (Vault parası) şartı aransın mı?
-  # Vault yoksa otomatik kapanır ve sadece seviye şartı geçerli olur.
+  # Require the upgrade 'required-money' (Vault) cost? Disabled automatically
+  # if Vault is missing, in which case only the level requirement applies.
   enabled: true
 
-# ───────────── ŞEMATİKLER ─────────────
 schematics:
   default: classic
   list:
@@ -103,7 +97,6 @@ schematics:
         y: 5.0
         z: 0.5
 
-# ───────────── VERİTABANI ─────────────
 storage:
   type: sqlite
   mysql:
@@ -114,64 +107,55 @@ storage:
     password: ""
     ssl: false
 
-# ╔══════════════════════════════════════════════════════════════╗
-# ║  PROXY MODÜLÜ (sunucular arası senkron)                        ║
-# ╚══════════════════════════════════════════════════════════════╝
-# Birden fazla skyblock backend sunucusunu Velocity/BungeeCord arkasında
-# çalıştırmak içindir. Tüm backend'ler AYNI MySQL'i paylaşmalıdır
-# (storage.type: mysql ve hepsinde aynı host/database).
+# Proxy module: keeps islands in sync across multiple backend servers behind
+# Velocity/BungeeCord. All backends must share the same MySQL database
+# (storage.type: mysql with identical host/database).
 #
-# Çalışma şekli:
-#  - Her ada fiziksel olarak tek bir backend sunucuda barınır (oluşturulduğu yerde).
-#  - /ada git veya /ada ziyaret <oyuncu> ile, ada başka sunucudaysa oyuncu
-#    otomatik olarak doğru sunucuya gönderilir ve adasına ışınlanır.
-#  - Ada verisi değiştiğinde (üye, rol, bayrak, level) Redis üzerinden diğer
-#    sunuculara bildirilir; onlar da veriyi DB'den tazeler.
+# How it works:
+#  - Each island physically lives on one backend server (where it was created).
+#  - /island home or /island visit <player> sends the player to the right server
+#    when the island lives elsewhere, then teleports them in.
+#  - Island changes (members, roles, flags, level) are published over Redis so
+#    the other servers refresh that island from the database.
 #
-# NOT: Oyuncuların skyblock sunucularına dengeli dağıtımı (load-balancing)
-# lobi/proxy işidir; bu modül adayı, oyuncunun oluşturduğu sunucuda inşa eder.
-#
-# MİGRASYON (önemli): Tek sunucudan çoklu sunucuya geçiyorsan, var olan tüm
-# adalar zaten o tek sunucunun dünyasında fizikseldir. Proxy'yi açmadan ÖNCE
-# bu adaların DB'deki 'server' sütununu o sunucunun adıyla doldur (tek SQL:
-#   UPDATE islands SET server = 'skyblock-1' WHERE server IS NULL;).
-# Aksi halde 'server' boş bir adaya, ona ilk erişen sunucu kendini atar ve
-# blokları başka sunucuda olan oyuncu boş alana ışınlanabilir.
+# Migrating from a single server: existing islands already live in that server's
+# world, so before enabling the proxy, stamp their 'server' column with this
+# server's name (one SQL statement):
+#   UPDATE islands SET server = 'skyblock-1' WHERE server IS NULL;
 proxy:
-  # Modül kapalıyken plugin tek sunucu gibi normal çalışır.
+  # When disabled, the plugin runs as a normal single-server plugin.
   enabled: false
 
-  # Bu sunucunun Velocity/BungeeCord yapılandırmasındaki adı.
-  # HER backend sunucuda FARKLI olmalı (örn: skyblock-1, skyblock-2).
+  # This server's name in your Velocity/BungeeCord config.
+  # Must be DIFFERENT on every backend (e.g. skyblock-1, skyblock-2).
   server-name: "skyblock-1"
 
-  # Spawn/lobi sunucusunun adı (ileride dönüş yönlendirmeleri için).
+  # Name of the spawn/lobby server (used for return routing).
   spawn-server: "spawn-1"
 
-  # Yeni adaların oluşturulabileceği skyblock backend sunucularının LİSTESİ.
-  # Oyuncu BAŞKA bir sunucudayken (ör. spawn/lobi) /ada oluştur derse, listedeki
-  # EN AZ adası olan sunucuya gönderilir ve ada ORADA oluşturulur (dengeli dağıtım).
-  # - Liste boşsa ada, komutun çalıştığı sunucuda oluşturulur.
-  # - Bu sunucunun server-name'i listedeyse, oyuncu burada oluşturursa yerel kalır.
-  # Yeni skyblock sunucusu eklemek için sadece adını bu listeye yaz (skyblock-2, 3, 4...).
+  # Backend servers where new islands may be created. When a player runs
+  # /island create from somewhere else (e.g. the lobby), they are sent to the
+  # server in this list with the fewest islands (balanced distribution).
+  #  - Empty list: the island is created on the server running the command.
+  #  - If this server's name is in the list, local creations stay local.
   create-servers:
     - "skyblock-1"
     - "skyblock-2"
 
-  # Oyuncu başka sunucuya gönderildikten sonra ışınlanma/oluşturma kaydının
-  # geçerli kalacağı süre (saniye).
+  # How long a pending teleport/create record stays valid after the player is
+  # sent to another server, in seconds.
   pending-teleport-seconds: 30
 
-  # Sorun gidermek için konsola ayrıntılı log basar (yönlendirme, gelen mesajlar).
+  # Print detailed routing logs to the console for troubleshooting.
   debug: false
 
-  # Sunucular arası anlık haberleşme için Redis bağlantısı.
-  # Tüm backend'ler AYNI Redis'e ve AYNI kanala bağlanmalıdır.
+  # Redis connection used for cross-server messaging. All backends must connect
+  # to the same Redis and the same channel.
   redis:
     host: "localhost"
     port: 6379
     username: ""
     password: ""
     timeout-seconds: 2
-    # Senkron mesajlarının yayınlandığı kanal adı (tüm sunucularda aynı olmalı).
+    # Channel sync messages are published on (must match on all servers).
     channel: "skyblock:proxy"

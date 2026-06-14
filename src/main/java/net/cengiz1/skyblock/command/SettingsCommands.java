@@ -1,0 +1,58 @@
+package net.cengiz1.skyblock.command;
+
+import net.cengiz1.skyblock.SkyblockPlugin;
+import net.cengiz1.skyblock.island.Island;
+import net.cengiz1.skyblock.island.IslandPermission;
+import org.bukkit.entity.Player;
+
+public class SettingsCommands extends CommandHandler {
+
+    public SettingsCommands(SkyblockPlugin plugin) {
+        super(plugin);
+    }
+
+    public void openIslandMenu(Player player, String menuId) {
+        Island island = plugin.getIslandManager().getByMember(player.getUniqueId());
+        if (island == null) {
+            plugin.getMessages().send(player, "no-island");
+            return;
+        }
+        if (!plugin.getMenuManager().has(menuId)) {
+            plugin.getMessages().send(player, "unknown-subcommand");
+            return;
+        }
+        plugin.getMenuManager().open(player, menuId, island.getUniqueId());
+    }
+
+    public void setSpawn(Player player) {
+        Island island = requirePermission(player, IslandPermission.SET_HOME);
+        if (island == null)
+            return;
+        if (plugin.getIslandManager().getIslandAt(player.getLocation()) != island) {
+            plugin.getMessages().send(player, "must-be-on-island");
+            return;
+        }
+        island.setHome(player.getLocation());
+        plugin.getIslandManager().saveAsync(island);
+        plugin.getMessages().send(player, "spawn-set");
+    }
+
+    public void toggleFly(Player player) {
+        Island island = requirePermission(player, IslandPermission.FLY);
+        if (island == null)
+            return;
+        boolean enable = !player.getAllowFlight();
+        player.setAllowFlight(enable);
+        player.setFlying(enable);
+        plugin.getMessages().send(player, enable ? "fly-on" : "fly-off");
+    }
+
+    public void toggleLock(Player player) {
+        Island island = requirePermission(player, IslandPermission.TOGGLE_SETTINGS);
+        if (island == null)
+            return;
+        island.setLocked(!island.isLocked());
+        plugin.getIslandManager().saveAsync(island);
+        plugin.getMessages().send(player, island.isLocked() ? "island-locked" : "island-unlocked");
+    }
+}

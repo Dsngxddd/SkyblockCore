@@ -32,8 +32,6 @@ public class Island {
     private boolean locked;
     private IslandTime time = IslandTime.NORMAL;
 
-    // Proxy modülü: bu adanın fiziksel olarak barındığı backend sunucunun adı
-    // (Velocity/BungeeCord'daki sunucu adı). Proxy kapalıyken null kalabilir.
     private String serverName;
 
     private double points;
@@ -70,7 +68,6 @@ public class Island {
         return owner;
     }
 
-    /** Sahibi değiştirir (devir). Eşleme güncellemesi IslandManager'da yapılır. */
     public void setOwner(UUID owner) {
         this.owner = owner;
         this.dirty = true;
@@ -141,8 +138,6 @@ public class Island {
         return homePitch;
     }
 
-    // ----- İsim / kilit / zaman -----
-
     public String getName() {
         return name;
     }
@@ -152,7 +147,6 @@ public class Island {
         this.dirty = true;
     }
 
-    /** Storage yüklemesi için: dirty işaretlemeden ayarlar. */
     public void setNameRaw(String name) {
         this.name = name;
     }
@@ -170,8 +164,6 @@ public class Island {
         this.locked = locked;
     }
 
-    // ----- Proxy: barındıran sunucu -----
-
     public String getServerName() {
         return serverName;
     }
@@ -181,7 +173,6 @@ public class Island {
         this.dirty = true;
     }
 
-    /** Storage yüklemesi için: dirty işaretlemeden ayarlar. */
     public void setServerNameRaw(String serverName) {
         this.serverName = serverName;
     }
@@ -198,8 +189,6 @@ public class Island {
     public void setTimeRaw(IslandTime time) {
         this.time = time == null ? IslandTime.NORMAL : time;
     }
-
-    // ----- Level / puan -----
 
     public double getPoints() {
         return points;
@@ -231,8 +220,6 @@ public class Island {
         this.level = Math.max(0, level);
     }
 
-    // ----- Bayraklar (ada ayarları) -----
-
     public boolean getFlag(IslandFlag flag) {
         return this.flags.getOrDefault(flag, flag.getDefault());
     }
@@ -242,13 +229,10 @@ public class Island {
         this.dirty = true;
     }
 
-    // ----- Üyeler / roller -----
-
     public Map<UUID, IslandRole> getMembers() {
         return Collections.unmodifiableMap(members);
     }
 
-    /** Sahip dahil tüm üye uuid'leri. */
     public Set<UUID> getAllMemberIds() {
         Set<UUID> ids = new HashSet<>(members.keySet());
         ids.add(owner);
@@ -291,10 +275,8 @@ public class Island {
     }
 
     public int getMemberCount() {
-        return members.size() + 1; // + sahip
+        return members.size() + 1;
     }
-
-    // ----- Ban -----
 
     public Set<UUID> getBanned() {
         return Collections.unmodifiableSet(banned);
@@ -316,8 +298,6 @@ public class Island {
             this.dirty = true;
     }
 
-    // ----- Yükseltmeler -----
-
     public int getUpgradeLevel(String key) {
         return this.upgrades.getOrDefault(key.toLowerCase(), 1);
     }
@@ -330,8 +310,6 @@ public class Island {
     public Map<String, Integer> getUpgrades() {
         return Collections.unmodifiableMap(upgrades);
     }
-
-    // ----- Serileştirme -----
 
     public String serializeFlags() {
         StringBuilder builder = new StringBuilder();

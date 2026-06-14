@@ -50,7 +50,7 @@ public class SqlStorage implements Storage {
                         "flags TEXT)")) {
             statement.executeUpdate();
         }
-        // Sonradan eklenen sütunlar (eski tablolar için geriye dönük uyumluluk).
+
         addColumnIfMissing("flags", "TEXT");
         addColumnIfMissing("name", "VARCHAR(64)");
         addColumnIfMissing("locked", "INT");
@@ -68,7 +68,7 @@ public class SqlStorage implements Storage {
                 "ALTER TABLE islands ADD COLUMN " + column + " " + type)) {
             statement.executeUpdate();
         } catch (SQLException ignored) {
-            // Sütun zaten varsa hata fırlatır; görmezden geliyoruz.
+
         }
     }
 
@@ -126,7 +126,6 @@ public class SqlStorage implements Storage {
         return null;
     }
 
-    /** Bir satırı Island nesnesine çevirir. */
     private Island mapRow(ResultSet result) throws SQLException {
         Island island = new Island(
                 UUID.fromString(result.getString("uuid")),
@@ -176,10 +175,10 @@ public class SqlStorage implements Storage {
 
         try (PreparedStatement statement = connection().prepareStatement(sql)) {
             int i = 1;
-            // INSERT bölümü
+
             statement.setString(i++, island.getUniqueId().toString());
             i = bindCommon(statement, island, i);
-            // UPDATE bölümü (uuid hariç)
+
             bindCommon(statement, island, i);
 
             statement.executeUpdate();
@@ -189,7 +188,6 @@ public class SqlStorage implements Storage {
         }
     }
 
-    /** owner ... upgrades sırasındaki ortak alanları bağlar, sonraki indeksi döner. */
     private int bindCommon(PreparedStatement statement, Island island, int i) throws SQLException {
         statement.setString(i++, island.getOwner().toString());
         statement.setString(i++, island.getWorldName());

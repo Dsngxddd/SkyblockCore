@@ -1,27 +1,24 @@
 package net.cengiz1.skyblock;
 
 import net.cengiz1.skyblock.command.CommandRegistrar;
+import net.cengiz1.skyblock.config.ConfigMigrator;
 import net.cengiz1.skyblock.config.MessageManager;
 import net.cengiz1.skyblock.config.SettingsManager;
 import net.cengiz1.skyblock.economy.EconomyHook;
 import net.cengiz1.skyblock.economy.NoEconomyHook;
 import net.cengiz1.skyblock.economy.VaultEconomyHook;
 import net.cengiz1.skyblock.invite.InviteManager;
-import net.cengiz1.skyblock.island.BorderManager;
 import net.cengiz1.skyblock.island.IslandManager;
 import net.cengiz1.skyblock.island.IslandTimeTask;
 import net.cengiz1.skyblock.island.RoleManager;
-import net.cengiz1.skyblock.level.BlockTrackListener;
+import net.cengiz1.skyblock.island.VisitService;
 import net.cengiz1.skyblock.level.BlockValueManager;
 import net.cengiz1.skyblock.level.LevelManager;
-import net.cengiz1.skyblock.listener.IslandFlagListener;
-import net.cengiz1.skyblock.menu.MenuListener;
+import net.cengiz1.skyblock.listener.ListenerRegistrar;
 import net.cengiz1.skyblock.menu.MenuManager;
-import net.cengiz1.skyblock.proxy.ProxyListener;
 import net.cengiz1.skyblock.proxy.ProxyManager;
 import net.cengiz1.skyblock.storage.SqlStorage;
 import net.cengiz1.skyblock.storage.Storage;
-import net.cengiz1.skyblock.upgrade.UpgradeEffectListener;
 import net.cengiz1.skyblock.upgrade.UpgradeManager;
 import net.cengiz1.skyblock.world.WorldManager;
 import org.bukkit.Bukkit;
@@ -40,13 +37,20 @@ public final class SkyblockPlugin extends JavaPlugin {
     private UpgradeManager upgradeManager;
     private RoleManager roleManager;
     private InviteManager inviteManager;
+    private VisitService visitService;
     private EconomyHook economy;
     private ProxyManager proxyManager;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        saveResource("messages.yml", false);
+        ConfigMigrator.sync(this, "config.yml");
+        ConfigMigrator.sync(this, "messages.yml");
+        ConfigMigrator.sync(this, "roles.yml");
+        ConfigMigrator.sync(this, "levels.yml");
+        ConfigMigrator.sync(this, "block-values.yml");
+        ConfigMigrator.sync(this, "upgrades.yml");
+        reloadConfig();
 
         this.settings = new SettingsManager(this);
         this.messages = new MessageManager(this);
@@ -55,7 +59,7 @@ public final class SkyblockPlugin extends JavaPlugin {
             this.storage = new SqlStorage(this, this.settings);
             this.storage.init();
         } catch (Exception error) {
-            getLogger().severe("Veritabanına bağlanılamadı: " + error.getMessage());
+            getLogger().severe("Could not connect to the database: " + error.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -70,6 +74,7 @@ public final class SkyblockPlugin extends JavaPlugin {
         this.levelManager = new LevelManager(this);
         this.roleManager = new RoleManager(this);
         this.inviteManager = new InviteManager(this.settings.getInviteExpireSeconds());
+        this.visitService = new VisitService(this);
 
         this.economy = setupEconomy();
         this.upgradeManager = new UpgradeManager(this);
@@ -77,31 +82,17 @@ public final class SkyblockPlugin extends JavaPlugin {
 
         this.menuManager = new MenuManager(this);
 
-        getServer().getPluginManager().registerEvents(new MenuListener(this.menuManager), this);
-        getServer().getPluginManager().registerEvents(new IslandFlagListener(this.islandManager), this);
-        getServer().getPluginManager().registerEvents(
-                new BlockTrackListener(this, this.islandManager, this.blockValueManager, this.levelManager), this);
-        getServer().getPluginManager().registerEvents(
-                new UpgradeEffectListener(this.islandManager, this.upgradeManager), this);
-
-        // Ada sınırı (border) — oyuncuya özel WorldBorder.
-        BorderManager borderManager = new BorderManager(this, this.islandManager);
-        this.islandManager.setBorderManager(borderManager);
-        getServer().getPluginManager().registerEvents(borderManager, this);
-
-        // Proxy modülü (sunucular arası senkron). config'de proxy.enabled: false ise pasif kalır.
         this.proxyManager = new ProxyManager(this);
         this.proxyManager.start();
-        if (this.proxyManager.isEnabled())
-            getServer().getPluginManager().registerEvents(new ProxyListener(this.proxyManager), this);
+
+        ListenerRegistrar.registerAll(this);
 
         CommandRegistrar.register(this);
 
-        // Ada zamanı (gece/gündüz) uygulayıcısı — her 2 saniyede bir.
         new IslandTimeTask(this, this.islandManager, this.settings)
                 .runTaskTimer(this, 40L, 40L);
 
-        getLogger().info("Skyblock etkinleştirildi.");
+        getLogger().info("Skyblock enabled.");
     }
 
     @Override
@@ -116,19 +107,19 @@ public final class SkyblockPlugin extends JavaPlugin {
 
     private EconomyHook setupEconomy() {
         if (!this.settings.isEconomyEnabled()) {
-            getLogger().info("Ekonomi config'de kapalı; para şartı uygulanmayacak.");
+            getLogger().info("Economy disabled in config; money requirements will be skipped.");
             return new NoEconomyHook();
         }
         try {
             EconomyHook hook = VaultEconomyHook.setup();
             if (hook != null) {
-                getLogger().info("Vault ekonomisine bağlanıldı.");
+                getLogger().info("Hooked into Vault economy.");
                 return hook;
             }
         } catch (Throwable error) {
-            getLogger().warning("Vault bağlanamadı: " + error.getMessage());
+            getLogger().warning("Could not hook into Vault: " + error.getMessage());
         }
-        getLogger().info("Vault bulunamadı; yükseltmeler yalnızca seviye şartıyla çalışacak.");
+        getLogger().info("Vault not found; upgrades will only require island level.");
         return new NoEconomyHook();
     }
 
@@ -181,6 +172,10 @@ public final class SkyblockPlugin extends JavaPlugin {
 
     public InviteManager getInviteManager() {
         return inviteManager;
+    }
+
+    public VisitService getVisitService() {
+        return visitService;
     }
 
     public EconomyHook getEconomy() {

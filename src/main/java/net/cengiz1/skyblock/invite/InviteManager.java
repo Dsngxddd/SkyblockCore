@@ -4,9 +4,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Ada davetlerini tutar. Davet, süresi dolduğunda geçersiz sayılır.
- */
 public class InviteManager {
 
     private static class Invite {
@@ -43,7 +40,6 @@ public class InviteManager {
         return true;
     }
 
-    /** Geçerliyse davet edilen adanın id'sini döner ve daveti tüketir; aksi halde null. */
     public UUID consume(UUID target) {
         Invite invite = this.invites.remove(target);
         if (invite == null || System.currentTimeMillis() > invite.expiresAt)

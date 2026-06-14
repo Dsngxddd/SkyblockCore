@@ -23,7 +23,6 @@ public class SettingsManager {
     private boolean borderEnabled;
     private String borderColor;
 
-    // Genel spawn (ada silinince / spawn'a dönüşte). Proxy ve proxysiz sistemde geçerli.
     private String spawnWorld;
     private double spawnX;
     private double spawnY;
@@ -48,7 +47,6 @@ public class SettingsManager {
     private String password;
     private boolean useSsl;
 
-    // ───────────── Proxy modülü ─────────────
     private boolean proxyEnabled;
     private boolean proxyDebug;
     private String proxyServerName;
@@ -115,7 +113,7 @@ public class SettingsManager {
         this.proxyDebug = config.getBoolean("proxy.debug", false);
         this.proxyServerName = config.getString("proxy.server-name", "skyblock-1");
         this.proxySpawnServer = config.getString("proxy.spawn-server", "spawn-1");
-        // create-servers liste olarak; eski tekil 'create-server' anahtarı da desteklenir.
+
         this.proxyCreateServers = new ArrayList<>(config.getStringList("proxy.create-servers"));
         if (this.proxyCreateServers.isEmpty()) {
             String single = config.getString("proxy.create-server", "");
@@ -155,7 +153,6 @@ public class SettingsManager {
         return borderColor;
     }
 
-    /** Yapılandırılmış genel spawn konumu; dünya tanımsız/bulunamazsa null. */
     public Location getSpawnLocation() {
         if (spawnWorld == null || spawnWorld.isEmpty())
             return null;
@@ -220,8 +217,6 @@ public class SettingsManager {
     public boolean isUseSsl() {
         return useSsl;
     }
-
-    // ───────────── Proxy getter'ları ─────────────
 
     public boolean isProxyEnabled() {
         return proxyEnabled;

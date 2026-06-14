@@ -33,14 +33,12 @@ public class IslandManager {
     private final Map<UUID, Island> islandsById = new ConcurrentHashMap<>();
     private final Map<UUID, UUID> ownerToIsland = new ConcurrentHashMap<>();
 
-    // Boyut yükseltmesi için; SkyblockPlugin tarafından sonradan bağlanır.
     private UpgradeManager upgradeManager;
 
-    // Proxy modülü; etkinse ProxyManager.start() tarafından bağlanır. null = proxy kapalı.
     private ProxyManager proxyManager;
-    // Bu backend sunucunun adı (proxy açıkken). null = proxy kapalı, tüm adalar yerel.
+
     private String localServerName;
-    // Ada sınırı yöneticisi; SkyblockPlugin tarafından bağlanır.
+
     private BorderManager borderManager;
 
     public IslandManager(SkyblockPlugin plugin, SettingsManager settings, Storage storage, WorldManager worldManager) {
@@ -114,10 +112,6 @@ public class IslandManager {
         return this.islandsById.values();
     }
 
-    /**
-     * Tek bir adayı veritabanından yeniden yükleyip önbelleği tazeler (proxy senkronu).
-     * DB'de yoksa önbellekten kaldırır. Async thread'den çağrılabilir (eşzamanlı map'ler).
-     */
     public void reloadIsland(UUID islandId) {
         Island fresh = this.storage.load(islandId);
         if (fresh == null) {
@@ -131,14 +125,12 @@ public class IslandManager {
         this.ownerToIsland.put(fresh.getOwner(), islandId);
     }
 
-    /** Adayı yalnızca yerel önbellekten kaldırır (DB'ye dokunmaz). */
     public void removeFromCache(UUID islandId) {
         Island existing = this.islandsById.remove(islandId);
         if (existing != null)
             this.ownerToIsland.remove(existing.getOwner());
     }
 
-    /** Adanın etkin koruma yarıçapı (boyut yükseltmesine göre). */
     public int getProtectionHalf(Island island) {
         double size = this.upgradeManager != null
                 ? this.upgradeManager.getValue(island, "size", settings.getIslandSize())
@@ -155,7 +147,7 @@ public class IslandManager {
         for (Island island : this.islandsById.values()) {
             if (!island.getWorldName().equals(worldName))
                 continue;
-            // Proxy açıkken: başka sunucuda barınan adaları yok say (fiziksel olarak burada değiller).
+
             if (this.localServerName != null && island.getServerName() != null
                     && !island.getServerName().equals(this.localServerName))
                 continue;
@@ -173,7 +165,6 @@ public class IslandManager {
         this.ownerToIsland.put(island.getOwner(), island.getUniqueId());
     }
 
-    /** Bir oyuncunun üyesi olduğu adayı döner (sahip veya üye). */
     public Island getByMember(UUID playerId) {
         Island own = getByOwner(playerId);
         if (own != null)
@@ -184,7 +175,6 @@ public class IslandManager {
         return null;
     }
 
-    /** Ada sahipliğini devreder. Eski sahip moderatör üye olur. */
     public void transferOwnership(Island island, UUID newOwner) {
         UUID oldOwner = island.getOwner();
         this.ownerToIsland.remove(oldOwner);
@@ -201,21 +191,19 @@ public class IslandManager {
 
         World world = this.worldManager.getWorld();
 
-        // Adada bulunan çevrimiçi üyeleri spawn'a ışınla (boşluğa düşmesinler).
         for (UUID id : island.getAllMemberIds()) {
             Player member = Bukkit.getPlayer(id);
-            if (member != null && member.isOnline() && getIslandAt(member.getLocation()) == island)
+            if (member != null && member.isOnline() && isWithin(island, member.getLocation()))
                 teleportToSpawn(member);
         }
 
-        // Tüm ada bölgesini (grid hücresini) temizle; sadece merkez platformu değil.
         int half = Math.max(2, settings.getIslandDistance() / 2 - 1);
         int centerX = island.getCenterX();
         int centerY = island.getCenterY();
         int centerZ = island.getCenterZ();
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            // FAWE bölge temizliği (async destekler); başarısızsa ana thread'de yedek platform temizliği.
+
             boolean cleared = this.schematicService.clearRegion(world, centerX, centerZ, half);
             if (!cleared)
                 Bukkit.getScheduler().runTask(plugin, () -> clearPlatform(world, centerX, centerY, centerZ));
@@ -226,28 +214,39 @@ public class IslandManager {
         });
     }
 
+    private boolean isWithin(Island island, Location location) {
+        if (location.getWorld() == null || !island.getWorldName().equals(location.getWorld().getName()))
+            return false;
+        int half = getProtectionHalf(island);
+        return Math.abs(location.getBlockX() - island.getCenterX()) <= half
+                && Math.abs(location.getBlockZ() - island.getCenterZ()) <= half;
+    }
+
+    public void deleteIslandConfirmed(Player owner, Island island) {
+        deleteIsland(island);
+        plugin.getMessages().send(owner, "deleted");
+    }
+
     public void teleportHome(Player player, Island island) {
         World world = this.worldManager.getWorld();
         Location home = island.getHome(world);
         world.getChunkAt(home);
         player.teleport(home);
-        // Ada sınırını doğrudan uygula (olay zamanlamasına güvenme).
+
         if (this.borderManager != null)
             this.borderManager.apply(player, island);
     }
 
-    /** Oyuncuyu spawn'a gönderir: proxy açıksa spawn sunucusuna, değilse yapılandırılmış spawn konumuna. */
     public void teleportToSpawn(Player player) {
         if (this.proxyManager != null && this.proxyManager.isEnabled() && this.proxyManager.sendToSpawn(player))
             return;
         Location spawn = settings.getSpawnLocation();
         if (spawn == null)
             spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
-        player.setWorldBorder(null); // ada sınırını kaldır
+        player.setWorldBorder(null);
         player.teleport(spawn);
     }
 
-    /** Adanın çevrimiçi tüm üyelerine (sahip dahil) mesaj gönderir. */
     public void messageMembers(Island island, String messageKey, String... replacements) {
         for (UUID id : island.getAllMemberIds()) {
             Player member = Bukkit.getPlayer(id);

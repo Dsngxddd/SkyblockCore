@@ -10,9 +10,6 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * block-values.yml dosyasını yükler. Her blokun ada puanına kattığı değeri tutar.
- */
 public class BlockValueManager {
 
     private final SkyblockPlugin plugin;
@@ -39,13 +36,13 @@ public class BlockValueManager {
             for (String key : section.getKeys(false)) {
                 Material material = Material.matchMaterial(key);
                 if (material == null) {
-                    plugin.getLogger().warning("block-values.yml: bilinmeyen blok '" + key + "'");
+                    plugin.getLogger().warning("block-values.yml: unknown block '" + key + "'");
                     continue;
                 }
                 this.values.put(material, section.getDouble(key));
             }
         }
-        plugin.getLogger().info(this.values.size() + " blok değeri yüklendi.");
+        plugin.getLogger().info("Loaded " + this.values.size() + " block values.");
     }
 
     public double getValue(Material material) {
@@ -58,7 +55,6 @@ public class BlockValueManager {
         return getValue(material) != 0.0;
     }
 
-    /** Menüde göstermek için: değeri 0'dan büyük tüm bloklar (sırayla). */
     public Map<Material, Double> getPositiveValues() {
         Map<Material, Double> result = new LinkedHashMap<>();
         for (Map.Entry<Material, Double> entry : this.values.entrySet())

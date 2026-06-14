@@ -3,15 +3,12 @@ version: 0.4.0
 main: net.cengiz1.skyblock.SkyblockPlugin
 api-version: 1.21
 author: cengiz1x
-softdepend: [FastAsyncWorldEdit, Vault]
-
-# Ada komutu plugin.yml'de DEĞİL; config.yml'deki ad/alias'larla dinamik
-# olarak kaydedilir (bkz: command.name / command.aliases).
+softdepend: [FastAsyncWorldEdit, Vault, PlaceholderAPI]
 
 permissions:
   skyblock.time:
-    description: Ada zamanını sabitleme izni (gece/gündüz)
+    description: Allows locking the island time (day/night)
     default: op
   skyblock.admin:
-    description: Skyblock yönetici izni
+    description: Skyblock administrator permission
     default: op

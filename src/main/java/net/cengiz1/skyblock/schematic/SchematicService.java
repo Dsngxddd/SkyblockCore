@@ -18,11 +18,6 @@ public interface SchematicService {
 
     void paste(SchematicDefinition definition, World world, int x, int y, int z) throws Exception;
 
-    /**
-     * Merkezi (centerX, centerZ) olan, yatayda ±half yarıçaplı ve dikeyde tüm
-     * dünya yüksekliği boyunca uzanan bölgeyi havaya (siler) çevirir.
-     * FAWE yoksa false döner (çağıran yedek temizliğe geçmeli).
-     */
     boolean clearRegion(World world, int centerX, int centerZ, int half);
 
     void reload();

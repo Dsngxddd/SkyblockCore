@@ -10,10 +10,6 @@ import redis.clients.jedis.JedisPubSub;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-/**
- * Redis bağlantısını ve pub/sub aboneliğini yönetir. Tek bir kanal üzerinden
- * mesaj yayınlar/dinler ve bekleyen ışınlanmalar için anahtar-değer saklar.
- */
 public class RedisMessenger {
 
     private final Logger logger;
@@ -41,7 +37,6 @@ public class RedisMessenger {
 
         this.pool = new JedisPool(new HostAndPort(host, port), clientConfig);
 
-        // Bağlantıyı hemen doğrula; başarısızsa exception fırlatır (ProxyManager yakalar).
         try (Jedis jedis = this.pool.getResource()) {
             jedis.ping();
         }
@@ -56,7 +51,7 @@ public class RedisMessenger {
                 try {
                     messageHandler.accept(message);
                 } catch (Throwable error) {
-                    logger.warning("Proxy mesajı işlenemedi: " + error.getMessage());
+                    logger.warning("Could not handle proxy message: " + error.getMessage());
                 }
             }
         };
@@ -68,7 +63,7 @@ public class RedisMessenger {
                 } catch (Throwable error) {
                     if (!running)
                         break;
-                    logger.warning("Redis abonelik bağlantısı koptu, 5 sn sonra yeniden denenecek: " + error.getMessage());
+                    logger.warning("Redis subscriber connection lost, retrying in 5s: " + error.getMessage());
                     sleep(5000L);
                 }
             }
@@ -81,20 +76,18 @@ public class RedisMessenger {
         try (Jedis jedis = pool.getResource()) {
             jedis.publish(channel, message);
         } catch (Throwable error) {
-            logger.warning("Proxy mesajı gönderilemedi: " + error.getMessage());
+            logger.warning("Could not publish proxy message: " + error.getMessage());
         }
     }
 
-    /** Bir anahtarı, saniye cinsinden süre dolumuyla yazar. */
     public void setWithExpiry(String key, String value, int seconds) {
         try (Jedis jedis = pool.getResource()) {
             jedis.setex(key, Math.max(1, seconds), value);
         } catch (Throwable error) {
-            logger.warning("Redis setex başarısız (" + key + "): " + error.getMessage());
+            logger.warning("Redis setex failed (" + key + "): " + error.getMessage());
         }
     }
 
-    /** Anahtarı okur ve siler (tek seferlik tüketim). Yoksa null döner. */
     public String takeValue(String key) {
         try (Jedis jedis = pool.getResource()) {
             String value = jedis.get(key);
@@ -102,7 +95,7 @@ public class RedisMessenger {
                 jedis.del(key);
             return value;
         } catch (Throwable error) {
-            logger.warning("Redis get/del başarısız (" + key + "): " + error.getMessage());
+            logger.warning("Redis get/del failed (" + key + "): " + error.getMessage());
             return null;
         }
     }

@@ -1,30 +1,31 @@
-# Yardım menüsü — /ada yardım
-title: "&8Yardım & Komutlar"
+# Help menu (/island help).
+title: "&8Help & Commands"
 rows: 3
 type: normal
 
 items:
-  yardim:
+  help:
     slot: 13
     material: BOOK
-    name: "&aYardım & Komutlar"
+    name: "&aHelp & Commands"
     lore:
-      - "&e/ada &7– Bu menüyü açar"
-      - "&e/ada git &7– Adana ışınlanırsın"
-      - "&e/ada oluştur &7– Yeni ada kurar"
-      - "&e/ada davet <isim> &7– Oyuncu davet eder"
-      - "&e/ada kabul &7– Daveti kabul eder"
-      - "&e/ada ayrıl &7– Adadan ayrılır"
-      - "&e/ada at <isim> &7– Üyeyi atar"
-      - "&e/ada devret <isim> &7– Sahipliği devreder"
-      - "&e/ada ayarlar &7– Ada ayarlarını açar"
-      - "&e/ada yükseltme &7– Ada yükseltmeleri"
-      - "&e/ada level &7– Ada seviyeni gösterir"
-      - "&e/ada ban/unban <isim> &7– Yasaklar/kaldırır"
-      - "&e/ada trust/untrust <isim> &7– Üye yetkisi"
+      - "&e/island &7– Opens this menu"
+      - "&e/island home &7– Teleports to your island"
+      - "&e/island create &7– Creates a new island"
+      - "&e/island visit <name> &7– Visits a player's island"
+      - "&e/island invite <name> &7– Invites a player"
+      - "&e/island accept &7– Accepts an invite"
+      - "&e/island leave &7– Leaves the island"
+      - "&e/island kick <name> &7– Kicks a member"
+      - "&e/island transfer <name> &7– Transfers ownership"
+      - "&e/island settings &7– Opens island settings"
+      - "&e/island upgrade &7– Island upgrades"
+      - "&e/island level &7– Shows your island level"
+      - "&e/island ban/unban <name> &7– Bans/unbans a player"
+      - "&e/island trust/untrust <name> &7– Member access"
 
-  kapat:
+  close:
     slot: 22
     material: ARROW
-    name: "&cKapat"
+    name: "&cClose"
     action: "close"

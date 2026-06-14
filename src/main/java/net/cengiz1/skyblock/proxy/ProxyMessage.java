@@ -5,10 +5,6 @@ import com.google.gson.JsonParser;
 
 import java.util.UUID;
 
-/**
- * Redis kanalında JSON olarak taşınan basit mesaj.
- * Alanlar: type (mesaj türü), origin (gönderen sunucu adı), island (ada UUID, opsiyonel).
- */
 public class ProxyMessage {
 
     private final MessageType type;

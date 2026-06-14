@@ -1,27 +1,25 @@
-# ╔══════════════════════════════════════════════════════════════╗
-# ║  ADA ROLLERİ                                                    ║
-# ║  Rollerin görünen adlarını ve yetkilerini buradan ayarla.     ║
-# ║  Sahip (owner) her zaman tüm yetkilere sahiptir.              ║
-# ║                                                                ║
-# ║  Yetkiler: BLOCK_PLACE, BLOCK_BREAK, INTERACT, CONTAINER,     ║
-# ║  FARM, PICKUP_ITEMS, DROP_ITEMS, DAMAGE_MOBS, INVITE, KICK,   ║
-# ║  BAN, SET_HOME, SET_WARP, TOGGLE_SETTINGS, UPGRADE,           ║
-# ║  MANAGE_MEMBERS, FLY, DELETE_ISLAND, TRANSFER  ('*' = hepsi)  ║
-# ╚══════════════════════════════════════════════════════════════╝
+# Island roles.
+# Set each role's display name and permissions here.
+# The owner always has every permission.
+#
+# Permissions: BLOCK_PLACE, BLOCK_BREAK, INTERACT, CONTAINER, FARM,
+# PICKUP_ITEMS, DROP_ITEMS, DAMAGE_MOBS, INVITE, KICK, BAN, SET_HOME,
+# SET_WARP, TOGGLE_SETTINGS, UPGRADE, MANAGE_MEMBERS, FLY, DELETE_ISLAND,
+# TRANSFER  ('*' = all)
 
 roles:
   visitor:
-    name: "&7Ziyaretçi"
+    name: "&7Visitor"
     permissions: []
 
   farmer:
-    name: "&aÇiftçi"
+    name: "&aFarmer"
     permissions:
       - FARM
       - INTERACT
 
   member:
-    name: "&fÜye"
+    name: "&fMember"
     permissions:
       - BLOCK_PLACE
       - BLOCK_BREAK
@@ -34,7 +32,7 @@ roles:
       - FLY
 
   architect:
-    name: "&bMimar"
+    name: "&bArchitect"
     permissions:
       - BLOCK_PLACE
       - BLOCK_BREAK
@@ -49,7 +47,7 @@ roles:
       - SET_WARP
 
   moderator:
-    name: "&eModeratör"
+    name: "&eModerator"
     permissions:
       - BLOCK_PLACE
       - BLOCK_BREAK
@@ -70,6 +68,6 @@ roles:
       - MANAGE_MEMBERS
 
   owner:
-    name: "&6Sahip"
+    name: "&6Owner"
     permissions:
       - "*"

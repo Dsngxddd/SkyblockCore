@@ -14,10 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * upgrades.yml dosyasını yükler, yükseltme değerlerini hesaplar ve satın alma
- * (seviye/para şartlarıyla) işlemini yürütür.
- */
 public class UpgradeManager {
 
     public enum PurchaseResult {
@@ -98,7 +94,7 @@ public class UpgradeManager {
 
             this.upgrades.put(upgrade.getKey(), upgrade);
         }
-        plugin.getLogger().info(this.upgrades.size() + " yükseltme yüklendi.");
+        plugin.getLogger().info("Loaded " + this.upgrades.size() + " upgrades.");
     }
 
     public Upgrade get(String key) {
@@ -109,7 +105,6 @@ public class UpgradeManager {
         return Collections.unmodifiableMap(this.upgrades);
     }
 
-    /** Adanın bir yükseltmedeki mevcut sayısal değeri (yoksa fallback). */
     public double getValue(Island island, String key, double fallback) {
         Upgrade upgrade = get(key);
         if (upgrade == null)
@@ -118,7 +113,6 @@ public class UpgradeManager {
         return level == null ? fallback : level.getValue();
     }
 
-    /** GENERATOR tipli yükseltme için ağırlıklı rastgele blok seçer. */
     public Material pickGeneratorBlock(Island island, String key, Material fallback) {
         Upgrade upgrade = get(key);
         if (upgrade == null || upgrade.getType() != UpgradeType.GENERATOR)
@@ -142,10 +136,6 @@ public class UpgradeManager {
         return fallback;
     }
 
-    /**
-     * Yükseltmeyi bir seviye yükseltmeye çalışır. Şartlar sağlanırsa parayı
-     * çeker, ada seviyesini artırır ve kaydeder.
-     */
     public PurchaseResult purchase(Player player, Island island, String key, EconomyHook economy) {
         Upgrade upgrade = get(key);
         if (upgrade == null)
@@ -168,7 +158,7 @@ public class UpgradeManager {
 
         island.setUpgradeLevel(key, next.getLevel());
         plugin.getIslandManager().saveAsync(island);
-        // Boyut yükseltmesi ada sınırını büyütür; açık üyelere yeniden uygula.
+
         if (key.equalsIgnoreCase("size") && plugin.getIslandManager().getBorderManager() != null)
             plugin.getIslandManager().getBorderManager().refresh(island);
         return PurchaseResult.SUCCESS;

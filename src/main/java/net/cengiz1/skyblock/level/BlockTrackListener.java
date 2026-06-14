@@ -9,9 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-/**
- * Adaya blok konulunca puan ekler, kırılınca düşürür ve seviye değişimini işler.
- */
 public class BlockTrackListener implements Listener {
 
     private final SkyblockPlugin plugin;

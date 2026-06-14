@@ -1,16 +1,12 @@
 package net.cengiz1.skyblock.island;
 
-/**
- * Ada zaman ayarı. NORMAL döngüye bırakır; diğerleri adada saati sabitler.
- * Sabitleme yetkisi izin gerektirir (örn. skyblock.time).
- */
 public enum IslandTime {
 
-    NORMAL(-1, "&fNormal (Döngü)"),
-    DAY(1000, "&eGündüz"),
-    NOON(6000, "&6Öğlen"),
-    NIGHT(13000, "&9Gece"),
-    MIDNIGHT(18000, "&5Gece Yarısı");
+    NORMAL(-1, "&fNormal (Cycle)"),
+    DAY(1000, "&eDay"),
+    NOON(6000, "&6Noon"),
+    NIGHT(13000, "&9Night"),
+    MIDNIGHT(18000, "&5Midnight");
 
     private final long ticks;
     private final String displayName;

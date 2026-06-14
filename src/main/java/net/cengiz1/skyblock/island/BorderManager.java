@@ -18,17 +18,11 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Oyuncu bir adaya girince ada sınırını gösteren (oyuncuya özel) bir dünya sınırı
- * (WorldBorder) uygular; adadan çıkınca kaldırır. Sınır yarıçapı, adanın koruma
- * boyutuna (boyut yükseltmesi dahil) göre hesaplanır.
- */
 public class BorderManager implements Listener {
 
     private final SkyblockPlugin plugin;
     private final IslandManager islandManager;
 
-    // Oyuncunun en son hangi adada olduğunu tutar (gereksiz güncellemeleri önlemek için).
     private final Map<UUID, UUID> lastIsland = new ConcurrentHashMap<>();
 
     public BorderManager(SkyblockPlugin plugin, IslandManager islandManager) {
@@ -52,7 +46,7 @@ public class BorderManager implements Listener {
         Location to = event.getTo();
         if (to == null)
             return;
-        // Işınlanma tamamlandıktan sonra (1 tick) güncelle.
+
         Bukkit.getScheduler().runTask(plugin, () -> update(player, player.getLocation()));
     }
 
@@ -62,13 +56,12 @@ public class BorderManager implements Listener {
         Location to = event.getTo();
         if (to == null)
             return;
-        // Sadece blok X/Z değişince kontrol et (tick başına sel yapmasın).
+
         if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ())
             return;
         update(event.getPlayer(), to);
     }
 
-    /** Oyuncunun bulunduğu konuma göre sınırı uygular/kaldırır. */
     public void update(Player player, Location location) {
         if (!plugin.getSettings().isBorderEnabled())
             return;
@@ -81,14 +74,13 @@ public class BorderManager implements Listener {
 
         if (newId == null) {
             this.lastIsland.remove(player.getUniqueId());
-            player.setWorldBorder(null); // dünyanın varsayılan sınırına dön
+            player.setWorldBorder(null);
         } else {
             this.lastIsland.put(player.getUniqueId(), newId);
             apply(player, island);
         }
     }
 
-    /** Bir adanın sınırını oyuncuya yeniden uygular (ör. boyut yükseltmesi sonrası). */
     public void refresh(Island island) {
         if (!plugin.getSettings().isBorderEnabled())
             return;
@@ -102,7 +94,6 @@ public class BorderManager implements Listener {
         }
     }
 
-    /** Bir adanın sınırını oyuncuya uygular ve önbelleği günceller. (Işınlama/oluşturmadan da çağrılır.) */
     public void apply(Player player, Island island) {
         if (!plugin.getSettings().isBorderEnabled())
             return;
@@ -116,8 +107,6 @@ public class BorderManager implements Listener {
         border.setWarningDistance(0);
         border.setWarningTime(0);
 
-        // Renk: vanilla WorldBorder rengi büyüme/küçülme durumundan gelir.
-        // YEŞİL = çok yavaş büyür, KIRMIZI = çok yavaş küçülür, MAVİ = sabit.
         switch (plugin.getSettings().getBorderColor()) {
             case "GREEN":
                 border.setSize(size + 10.0, 9_999_999L);
@@ -125,7 +114,7 @@ public class BorderManager implements Listener {
             case "RED":
                 border.setSize(Math.max(3.0, size - 10.0), 9_999_999L);
                 break;
-            default: // BLUE / sabit
+            default:
                 break;
         }
 

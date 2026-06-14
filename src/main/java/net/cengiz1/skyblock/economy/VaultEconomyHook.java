@@ -5,10 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-/**
- * Vault üzerinden ekonomi. Yalnızca Vault sunucuda mevcutken oluşturulur
- * (bkz: SkyblockPlugin) — böylece Vault yoksa bu sınıf hiç yüklenmez.
- */
 public class VaultEconomyHook implements EconomyHook {
 
     private final Economy economy;
@@ -17,7 +13,6 @@ public class VaultEconomyHook implements EconomyHook {
         this.economy = economy;
     }
 
-    /** Vault ekonomisi bağlanabilirse hook döner, aksi halde null. */
     public static EconomyHook setup() {
         if (Bukkit.getPluginManager().getPlugin("Vault") == null)
             return null;

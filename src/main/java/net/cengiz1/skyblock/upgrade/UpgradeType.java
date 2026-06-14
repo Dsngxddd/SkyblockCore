@@ -1,10 +1,5 @@
 package net.cengiz1.skyblock.upgrade;
 
-/**
- * Yükseltme davranış tipi.
- * VALUE     : tek sayısal değer (limit, çarpan, boyut...).
- * GENERATOR : seviyeye göre ağırlıklı blok şansları (cobble jeneratörü).
- */
 public enum UpgradeType {
     VALUE,
     GENERATOR;

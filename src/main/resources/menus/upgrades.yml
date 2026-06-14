@@ -1,39 +1,42 @@
-# Yükseltme menüsü — /ada yükseltme
-# type: upgrades  -> öğeler upgrades.yml'den otomatik doldurulur.
-# Her yükseltmenin slotu/ikonu upgrades.yml'de tanımlıdır.
-title: "&8Yükseltme Menüsü"
+# Upgrades menu (/island upgrade).
+# type: upgrades -> items are filled automatically from upgrades.yml,
+# each upgrade's slot and icon are defined there.
+
+title: "&8Upgrades Menu"
 rows: 5
 type: upgrades
 
-# Yükseltilebilir öğelerin lore şablonu:
+# Lore template for upgradeable items.
+# {level} current level, {next_level} next level,
+# {current} current value, {next} next value (for the generator these show the tier).
 upgrade-lore:
   - ""
-  - "&7Şu anki: &a{current}"
-  - "&7Sıradaki: &a{next}"
+  - "&7Current: &a{current} &8(Lvl {level})"
+  - "&7Next: &a{next} &8(Lvl {next_level})"
   - ""
-  - "&7Gerekli Seviye: &e{req_level}"
-  - "&7Gerekli Para: &e{req_money}"
+  - "&7Required Level: &e{req_level}"
+  - "&7Required Money: &e{req_money}"
   - ""
-  - "&eYükseltmek için tıkla!"
+  - "&eClick to upgrade!"
 
-# Maksimuma ulaşmış yükseltmeler için lore:
+# Lore template for maxed-out upgrades.
 upgrade-lore-max:
   - ""
-  - "&7Şu anki: &a{current}"
+  - "&7Current: &a{current} &8(Lvl {level})"
   - ""
-  - "&a✔ Maksimum seviye!"
+  - "&a✔ Maximum level!"
 
 items:
-  bilgi:
+  info:
     slot: 4
     material: EXPERIENCE_BOTTLE
-    name: "&bAda Yükseltmeleri"
+    name: "&bIsland Upgrades"
     lore:
-      - "&7Ada Seviyesi: &e{level}"
-      - "&7Puan: &e{points}"
+      - "&7Island Level: &e{level}"
+      - "&7Points: &e{points}"
 
-  geri:
+  back:
     slot: 40
     material: ARROW
-    name: "&cGeri"
+    name: "&cBack"
     action: "open:main"

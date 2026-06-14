@@ -8,11 +8,6 @@ import java.io.File;
 import java.util.EnumSet;
 import java.util.List;
 
-/**
- * roles.yml dosyasından rol görünen adlarını ve yetkilerini yükler.
- * Böylece roller, isimleri ve hangi yetkilere sahip oldukları tamamen
- * configden ayarlanabilir.
- */
 public class RoleManager {
 
     private final SkyblockPlugin plugin;
@@ -42,7 +37,7 @@ public class RoleManager {
                 role.setDisplayName(name);
 
             if (role == IslandRole.OWNER)
-                continue; // sahip her zaman tüm yetkilere sahiptir
+                continue;
 
             if (section.isList("permissions")) {
                 List<String> list = section.getStringList("permissions");

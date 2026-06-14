@@ -1,0 +1,29 @@
+# Confirmation shown before an island is deleted.
+title: "&cDelete your island?"
+rows: 3
+type: normal
+
+items:
+  info:
+    slot: 13
+    material: TNT
+    name: "&cDelete Island"
+    lore:
+      - "&7This will permanently delete your island."
+      - "&7This action cannot be undone!"
+
+  confirm:
+    slot: 11
+    material: LIME_WOOL
+    name: "&aConfirm"
+    lore:
+      - "&7Yes, delete my island."
+    action: "delete-island"
+
+  cancel:
+    slot: 15
+    material: RED_WOOL
+    name: "&cCancel"
+    lore:
+      - "&7Keep my island."
+    action: "open:main"

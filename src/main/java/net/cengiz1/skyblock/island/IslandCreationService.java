@@ -105,14 +105,12 @@ public class IslandCreationService {
                         index, centerX, centerY, centerZ);
                 island.setHome(centerX + offsetX, centerY + offsetY, centerZ + offsetZ, 0f, 0f);
 
-                // Proxy açıkken ada bu (yerel) sunucuda fiziksel olarak inşa edilir.
                 ProxyManager proxy = plugin.getProxyManager();
                 if (proxy != null && proxy.isEnabled())
                     island.setServerNameRaw(proxy.getServerName());
 
                 this.storage.save(island);
 
-                // Diğer sunucular yeni adayı (ör. ziyaret için) öğrensin.
                 if (proxy != null && proxy.isEnabled())
                     proxy.publishIslandUpdate(island.getUniqueId());
 
@@ -142,7 +140,7 @@ public class IslandCreationService {
                             Location home = island.getHome(world);
                             world.getChunkAt(home);
                             online.teleport(home);
-                            // Ada sınırını oluşturmada doğrudan uygula.
+
                             if (islandManager.getBorderManager() != null)
                                 islandManager.getBorderManager().apply(online, island);
                         }

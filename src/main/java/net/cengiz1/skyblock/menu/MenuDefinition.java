@@ -14,7 +14,6 @@ public class MenuDefinition {
         public final String name;
         public final List<String> lore;
         public final String action;
-        // Bu öğenin lore'una block-values.yml'deki blok değerleri eklensin mi?
         public final boolean blockValues;
 
         public Entry(int slot, Material material, int amount, String name,
@@ -31,14 +30,17 @@ public class MenuDefinition {
 
     private final String title;
     private final int rows;
-    private final String type; // "normal" | "upgrades"
+    private final String type;
     private final List<Entry> entries = new ArrayList<>();
 
-    // Yükseltme menüsü için lore şablonları
     private List<String> upgradeLore = new ArrayList<>();
     private List<String> upgradeLoreMax = new ArrayList<>();
-    // Blok değerleri lore formatı (örn: "&7• &f{block}: &e{value}")
     private String blockValuesFormat = "&7• &f{block}: &e{value}";
+
+    private List<Integer> headSlots = new ArrayList<>();
+    private String headName = "&f{owner} &7[{level}]";
+    private List<String> headLore = new ArrayList<>();
+    private String memberFormat = "&8• &f{player} &7{role}";
 
     public MenuDefinition(String title, int rows, String type) {
         this.title = title;
@@ -85,5 +87,41 @@ public class MenuDefinition {
     public void setBlockValuesFormat(String blockValuesFormat) {
         if (blockValuesFormat != null)
             this.blockValuesFormat = blockValuesFormat;
+    }
+
+    public List<Integer> getHeadSlots() {
+        return headSlots;
+    }
+
+    public void setHeadSlots(List<Integer> headSlots) {
+        if (headSlots != null)
+            this.headSlots = headSlots;
+    }
+
+    public String getHeadName() {
+        return headName;
+    }
+
+    public void setHeadName(String headName) {
+        if (headName != null)
+            this.headName = headName;
+    }
+
+    public List<String> getHeadLore() {
+        return headLore;
+    }
+
+    public void setHeadLore(List<String> headLore) {
+        if (headLore != null)
+            this.headLore = headLore;
+    }
+
+    public String getMemberFormat() {
+        return memberFormat;
+    }
+
+    public void setMemberFormat(String memberFormat) {
+        if (memberFormat != null)
+            this.memberFormat = memberFormat;
     }
 }

@@ -1,78 +1,96 @@
-# Ana ada menüsü — /ada
-title: "&8Ada Menüsü"
-rows: 3
-type: normal
+# Main island menu (/island).
+# type: warp -> the head slots are filled with the islands of players who are
+# currently online. Clicking a head visits that island (works across servers
+# when the proxy is enabled, and locally when it is not).
+
+title: "&8Island Menu"
+rows: 5
+type: warp
+
+# Slots that get filled with island heads (paginated when there are more).
+head-slots: [10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34]
+
+# Head display name. %vault_group% (and any other PlaceholderAPI placeholder)
+# is resolved for the island OWNER, so it shows their rank/prefix.
+head-name: "&7[&b%vault_group%&7] &f{owner} &7[&e{level}&7]"
+
+# Head tooltip. {member_list} expands into one line per member.
+head-lore:
+  - "&7Level: &e{level}"
+  - "&7Points: &e{points}"
+  - "&7Members: &e{members}&7/&e{team_limit}"
+  - "&7Visitors: {lock_state}"
+  - ""
+  - "{member_list}"
+  - ""
+  - "&eClick to visit this island!"
+
+# Format of each member line inside {member_list}.
+member-format: "&8• &f{player} &7{role}"
 
 items:
-  bilgi:
-    slot: 4
-    material: PLAYER_HEAD
-    name: "&aAdan"
-    lore:
-      - "&7Sahip: &f{owner}"
-      - "&7Seviye: &e{level}"
-      - "&7Puan: &e{points}"
-      - "&7Sonraki seviye: &e{next_points}"
-      - "&7Üyeler: &e{members}&7/&e{team_limit}"
-
-  git:
-    slot: 10
-    material: GRASS_BLOCK
-    name: "&aAda Teleport"
-    lore:
-      - "&eAdana ışınlanmak için tıkla!"
-    action: "island:git"
-
-  olustur:
-    slot: 11
-    material: NETHER_STAR
-    name: "&aAda Oluştur"
-    lore:
-      - "&7Yeni bir ada kur."
-    action: "island:oluştur"
-
-  ayarlar:
-    slot: 12
-    material: COMPARATOR
-    name: "&eAyarlar"
-    lore:
-      - "&eAda ayarlarını değiştirmek için tıkla!"
-    action: "open:settings"
-
-  yukseltme:
-    slot: 13
-    material: EXPERIENCE_BOTTLE
-    name: "&bAda Yükseltme Menüsü"
-    lore:
-      - "&eYükseltmeler için tıkla!"
-    action: "open:upgrades"
-
-  bloklevelleri:
-    slot: 14
-    material: GOLD_BLOCK
-    name: "&6Blok Levelleri"
-    block-values: true
-
-  yardim:
-    slot: 15
+  help:
+    slot: 36
     material: BOOK
-    name: "&aYardım & Komutlar"
+    name: "&aHelp & Commands"
     lore:
-      - "&7Komut listesini gör."
+      - "&7View the command list."
     action: "open:help"
 
-  sil:
-    slot: 16
-    material: BARRIER
-    name: "&cAda Sil"
+  home:
+    slot: 37
+    material: GRASS_BLOCK
+    name: "&aGo To My Island"
     lore:
-      - "&7Adanı kalıcı olarak sil."
-    action: "island:sil"
+      - "&eClick to teleport to your island!"
+    action: "island:git"
 
-  kapat:
-    slot: 22
+  create:
+    slot: 38
+    material: NETHER_STAR
+    name: "&aCreate Island"
+    lore:
+      - "&7Set up a new island."
+    action: "island:olustur"
+
+  prev-page:
+    slot: 39
     material: ARROW
-    name: "&cKapat"
+    name: "&ePrevious Page"
+    action: "page:prev"
+
+  close:
+    slot: 40
+    material: BARRIER
+    name: "&cClose"
     action: "close"
 
-block-values-format: "&7• &f{block}: &e{value}"
+  next-page:
+    slot: 41
+    material: ARROW
+    name: "&eNext Page"
+    action: "page:next"
+
+  settings:
+    slot: 42
+    material: COMPARATOR
+    name: "&eSettings"
+    lore:
+      - "&eClick to change your island settings."
+    action: "island:ayarlar"
+
+  upgrades:
+    slot: 43
+    material: EXPERIENCE_BOTTLE
+    name: "&bUpgrades"
+    lore:
+      - "&eClick to open the upgrades menu."
+    action: "island:yukseltme"
+
+  delete:
+    slot: 44
+    material: TNT
+    name: "&cDelete Island"
+    lore:
+      - "&7Permanently delete your island."
+    action: "open:delete-confirm"

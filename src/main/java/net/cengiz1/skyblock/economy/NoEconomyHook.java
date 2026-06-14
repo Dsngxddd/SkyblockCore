@@ -2,10 +2,6 @@ package net.cengiz1.skyblock.economy;
 
 import org.bukkit.entity.Player;
 
-/**
- * Ekonomi devre dışı / Vault yokken kullanılan boş uygulama.
- * Para şartı yoktur; her işlem başarılı sayılır.
- */
 public class NoEconomyHook implements EconomyHook {
 
     @Override

@@ -1,9 +1,7 @@
-# ╔══════════════════════════════════════════════════════════════╗
-# ║  ADA SEVİYELERİ                                                 ║
-# ║  Bir seviyeye ulaşmak için gereken TOPLAM puan.                ║
-# ║  Örn: 1. seviye = 100 puan, 2. seviye = 250 puan ...           ║
-# ║  Puanlar block-values.yml'deki bloklarla kazanılır.           ║
-# ╚══════════════════════════════════════════════════════════════╝
+# Island levels.
+# Total points required to reach a level.
+# e.g. level 1 = 100 points, level 2 = 250 points ...
+# Points are earned from the blocks in block-values.yml.
 
 requirements:
   1: 100
@@ -17,10 +15,10 @@ requirements:
   9: 12000
   10: 18000
 
-# Listede tanımlı en yüksek seviyeden sonrası için otomatik üretim.
+# Levels beyond the highest one defined above are generated automatically.
 auto:
   enabled: true
-  # Son tanımlı seviyeden sonra her yeni seviyeye eklenecek temel puan.
+  # Base points added for each new level past the last defined one.
   step: 8000
-  # Her seviyede 'step' bununla çarpılır (1.0 = sabit artış).
+  # 'step' is multiplied by this each level (1.0 = constant increase).
   multiplier: 1.15

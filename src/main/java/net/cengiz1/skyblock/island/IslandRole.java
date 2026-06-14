@@ -3,33 +3,27 @@ package net.cengiz1.skyblock.island;
 import java.util.EnumSet;
 import java.util.Set;
 
-/**
- * Ada rolleri. Yetki karşılaştırmaları {@link #weight} üzerinden yapılır:
- * bir oyuncu yalnızca kendisinden düşük ağırlıklı rolleri yönetebilir.
- * Her rolün görünen adı ve sahip olduğu yetkiler roles.yml ile değiştirilebilir
- * ({@link net.cengiz1.skyblock.island.RoleManager}).
- */
 public enum IslandRole {
 
-    VISITOR(0, "&7Ziyaretçi"),
-    FARMER(1, "&aÇiftçi", IslandPermission.FARM, IslandPermission.INTERACT),
-    MEMBER(2, "&fÜye",
+    VISITOR(0, "&7Visitor"),
+    FARMER(1, "&aFarmer", IslandPermission.FARM, IslandPermission.INTERACT),
+    MEMBER(2, "&fMember",
             IslandPermission.BLOCK_PLACE, IslandPermission.BLOCK_BREAK, IslandPermission.INTERACT,
             IslandPermission.CONTAINER, IslandPermission.FARM, IslandPermission.PICKUP_ITEMS,
             IslandPermission.DROP_ITEMS, IslandPermission.DAMAGE_MOBS, IslandPermission.FLY),
-    ARCHITECT(3, "&bMimar",
+    ARCHITECT(3, "&bArchitect",
             IslandPermission.BLOCK_PLACE, IslandPermission.BLOCK_BREAK, IslandPermission.INTERACT,
             IslandPermission.CONTAINER, IslandPermission.FARM, IslandPermission.PICKUP_ITEMS,
             IslandPermission.DROP_ITEMS, IslandPermission.DAMAGE_MOBS, IslandPermission.FLY,
             IslandPermission.SET_HOME, IslandPermission.SET_WARP),
-    MODERATOR(4, "&eModeratör",
+    MODERATOR(4, "&eModerator",
             IslandPermission.BLOCK_PLACE, IslandPermission.BLOCK_BREAK, IslandPermission.INTERACT,
             IslandPermission.CONTAINER, IslandPermission.FARM, IslandPermission.PICKUP_ITEMS,
             IslandPermission.DROP_ITEMS, IslandPermission.DAMAGE_MOBS, IslandPermission.FLY,
             IslandPermission.SET_HOME, IslandPermission.SET_WARP, IslandPermission.INVITE,
             IslandPermission.KICK, IslandPermission.BAN, IslandPermission.TOGGLE_SETTINGS,
             IslandPermission.UPGRADE, IslandPermission.MANAGE_MEMBERS),
-    OWNER(5, "&6Sahip", IslandPermission.values());
+    OWNER(5, "&6Owner", IslandPermission.values());
 
     private final int weight;
     private String displayName;
@@ -66,17 +60,15 @@ public enum IslandRole {
 
     public void setPermissions(Set<IslandPermission> values) {
         if (this == OWNER)
-            return; // sahip her zaman tüm yetkilere sahiptir
+            return;
         this.permissions.clear();
         this.permissions.addAll(values);
     }
 
-    /** Bu rol, hedef rolü yönetebilir mi (rol atama, atma, ban). */
     public boolean canManage(IslandRole target) {
         return this.weight > target.weight;
     }
 
-    /** Atanabilir roller (Sahip ve Ziyaretçi hariç). */
     public static IslandRole[] assignable() {
         return new IslandRole[]{FARMER, MEMBER, ARCHITECT, MODERATOR};
     }

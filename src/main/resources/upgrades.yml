@@ -1,18 +1,15 @@
-# ╔══════════════════════════════════════════════════════════════════════╗
-# ║  ADA YÜKSELTMELERİ                                                      ║
-# ║  Her yükseltmenin seviyeleri vardır. Bir seviyeye geçmek için          ║
-# ║  'required-level' (ada seviyesi) ve 'required-money' (Vault parası,     ║
-# ║  ekonomi açıksa) şartı aranır.                                          ║
-# ║                                                                        ║
-# ║  type: value      -> 'value' sayısal değerdir (limit / çarpan / boyut) ║
-# ║  type: generator  -> 'chances' ağırlıklı blok şanslarıdır              ║
-# ╚══════════════════════════════════════════════════════════════════════╝
+# Island upgrades.
+# Each upgrade has levels. Moving to a level requires 'required-level'
+# (island level) and 'required-money' (Vault, when economy is enabled).
+#
+# type: value     -> 'value' is a number (limit / multiplier / size)
+# type: generator -> 'chances' are weighted block chances
 
 upgrades:
 
-  # Takım (üye) limiti — value = sahip dahil maksimum üye sayısı
+  # Team limit -> value = max members including the owner.
   team-limit:
-    display-name: "&eSınır Limiti"
+    display-name: "&eTeam Limit"
     icon: PLAYER_HEAD
     slot: 10
     type: value
@@ -22,9 +19,9 @@ upgrades:
       3: { value: 8,  required-level: 12, required-money: 15000 }
       4: { value: 12, required-level: 25, required-money: 40000 }
 
-  # Ada boyutu — value = ada tam boyutu (blok, çap). Koruma yarıçapı value/2.
+  # Island size -> value = full island size (blocks across). Protection radius is value/2.
   size:
-    display-name: "&aAda Boyutu"
+    display-name: "&aIsland Size"
     icon: GRASS_BLOCK
     slot: 12
     type: value
@@ -34,9 +31,9 @@ upgrades:
       3: { value: 180, required-level: 20, required-money: 30000 }
       4: { value: 220, required-level: 40, required-money: 75000 }
 
-  # Çiftlik ürünleri — value = mahsül katlama şansı (%). Olgun mahsul kırılınca.
+  # Crop growth -> value = chance (%) to double a fully grown crop when harvested.
   crop-growth:
-    display-name: "&2Çiftlik Ürünleri Mahsül Katlama Şansı"
+    display-name: "&2Crop Double Chance"
     icon: WHEAT
     slot: 14
     type: value
@@ -46,9 +43,9 @@ upgrades:
       3: { value: 30, required-level: 15, required-money: 20000 }
       4: { value: 50, required-level: 30, required-money: 50000 }
 
-  # Mob ganimetleri — value = drop çarpanı (1 = normal, 2 = iki katı)
+  # Mob drops -> value = drop multiplier (1 = normal, 2 = double).
   mob-drops:
-    display-name: "&cMob Ganimetleri"
+    display-name: "&cMob Drops"
     icon: ROTTEN_FLESH
     slot: 16
     type: value
@@ -57,9 +54,9 @@ upgrades:
       2: { value: 2, required-level: 10, required-money: 12000 }
       3: { value: 3, required-level: 25, required-money: 35000 }
 
-  # Spawner hızı — value = gecikme çarpanı (1.0 normal, 0.5 = iki kat hızlı)
+  # Spawner rates -> value = delay multiplier (1.0 normal, 0.5 = twice as fast).
   spawner-rates:
-    display-name: "&bSpawner Hızı"
+    display-name: "&bSpawner Rates"
     icon: SPAWNER
     slot: 20
     type: value
@@ -68,9 +65,9 @@ upgrades:
       2: { value: 0.7, required-level: 12, required-money: 20000 }
       3: { value: 0.4, required-level: 30, required-money: 60000 }
 
-  # Jeneratör — seviyeye göre ağırlıklı blok şansları
+  # Generator -> weighted block chances per tier.
   generator:
-    display-name: "&7Jeneratör"
+    display-name: "&7Generator"
     icon: COBBLESTONE
     slot: 24
     type: generator

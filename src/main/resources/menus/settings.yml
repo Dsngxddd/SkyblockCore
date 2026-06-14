@@ -1,5 +1,5 @@
-# Ada ayarları menüsü — /ada ayarlar
-title: "&8Ada Ayarları"
+# Island settings menu (/island settings).
+title: "&8Island Settings"
 rows: 4
 type: normal
 
@@ -9,72 +9,82 @@ items:
     material: DIAMOND_SWORD
     name: "&ePvP"
     lore:
-      - "&7Durum: {flag_pvp}"
-      - "&eDeğiştirmek için tıkla."
+      - "&7Status: {flag_pvp}"
+      - "&eClick to toggle."
     action: "flag:PVP"
 
   mob:
     slot: 11
     material: ZOMBIE_HEAD
-    name: "&eCanavar Doğması"
+    name: "&eMob Spawning"
     lore:
-      - "&7Durum: {flag_mob_spawning}"
-      - "&eDeğiştirmek için tıkla."
+      - "&7Status: {flag_mob_spawning}"
+      - "&eClick to toggle."
     action: "flag:MOB_SPAWNING"
 
   creeper:
     slot: 12
     material: CREEPER_HEAD
-    name: "&eCreeper Patlaması"
+    name: "&eCreeper Explosions"
     lore:
-      - "&7Durum: {flag_creeper_explosion}"
-      - "&eDeğiştirmek için tıkla."
+      - "&7Status: {flag_creeper_explosion}"
+      - "&eClick to toggle."
     action: "flag:CREEPER_EXPLOSION"
 
   tnt:
     slot: 13
     material: TNT
-    name: "&eTNT Patlaması"
+    name: "&eTNT Explosions"
     lore:
-      - "&7Durum: {flag_tnt_explosion}"
-      - "&eDeğiştirmek için tıkla."
+      - "&7Status: {flag_tnt_explosion}"
+      - "&eClick to toggle."
     action: "flag:TNT_EXPLOSION"
 
   fire:
     slot: 14
     material: FLINT_AND_STEEL
-    name: "&eAteş Yayılması"
+    name: "&eFire Spread"
     lore:
-      - "&7Durum: {flag_fire_spread}"
-      - "&eDeğiştirmek için tıkla."
+      - "&7Status: {flag_fire_spread}"
+      - "&eClick to toggle."
     action: "flag:FIRE_SPREAD"
 
-  ziyaretci:
+  visitor-interact:
     slot: 15
     material: OAK_DOOR
-    name: "&eZiyaretçi Etkileşimi"
+    name: "&eVisitor Interaction"
     lore:
-      - "&7Durum: {flag_visitor_interact}"
-      - "&7(Sandık açma / eşya toplama)"
-      - "&eDeğiştirmek için tıkla."
+      - "&7Status: {flag_visitor_interact}"
+      - "&7(Opening chests / picking up items)"
+      - "&eClick to toggle."
     action: "flag:VISITOR_INTERACT"
 
-  zaman:
+  visit:
     slot: 16
-    material: CLOCK
-    name: "&bAda Zamanı"
+    material: IRON_DOOR
+    name: "&eVisitors"
     lore:
-      - "&7Adanın zamanını sabitler; güneş"
-      - "&7seçilen vakitte kalır."
+      - "&7Status: {lock_state}"
+      - "&7Open or close your island to visitors."
+      - "&eClick to toggle."
+    action: "toggle-lock"
+
+  time:
+    slot: 22
+    material: CLOCK
+    name: "&bIsland Time"
+    lore:
+      - "&7Locks your island's time so the sun"
+      - "&7stays at the chosen moment."
       - ""
-      - "&7Şu anki: {time}"
+      - "&7Current: {time}"
       - ""
-      - "&dSadece izinli (skyblock.time)."
-      - "&eSıradaki zamana geçmek için tıkla!"
+      - "&dRequires permission (skyblock.time)."
+      - "&eClick to switch to the next time!"
     action: "time"
 
-  geri:
+  back:
     slot: 31
     material: ARROW
-    name: "&cGeri"
+    name: "&cBack"
     action: "open:main"

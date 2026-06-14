@@ -1,32 +1,42 @@
 package net.cengiz1.skyblock.menu;
 
 import net.cengiz1.skyblock.SkyblockPlugin;
+import net.cengiz1.skyblock.config.ConfigMigrator;
 import net.cengiz1.skyblock.island.Island;
 import net.cengiz1.skyblock.island.IslandFlag;
 import net.cengiz1.skyblock.island.IslandManager;
 import net.cengiz1.skyblock.island.IslandPermission;
-import net.cengiz1.skyblock.island.IslandTime;
+import net.cengiz1.skyblock.island.IslandRole;
 import net.cengiz1.skyblock.upgrade.Upgrade;
 import net.cengiz1.skyblock.upgrade.UpgradeLevel;
 import net.cengiz1.skyblock.upgrade.UpgradeManager;
+import net.cengiz1.skyblock.upgrade.UpgradeType;
+import net.cengiz1.skyblock.util.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MenuManager {
+
+    private static final String[] DEFAULT_MENUS = {
+            "main.yml", "settings.yml", "upgrades.yml", "help.yml", "delete-confirm.yml"
+    };
 
     private final SkyblockPlugin plugin;
     private final IslandManager islandManager;
@@ -42,13 +52,11 @@ public class MenuManager {
         this.menus.clear();
 
         File folder = new File(plugin.getDataFolder(), "menus");
-        if (!folder.exists()) {
+        if (!folder.exists())
             folder.mkdirs();
-            plugin.saveResource("menus/main.yml", false);
-            plugin.saveResource("menus/settings.yml", false);
-            plugin.saveResource("menus/upgrades.yml", false);
-            plugin.saveResource("menus/help.yml", false);
-        }
+
+        for (String menu : DEFAULT_MENUS)
+            ConfigMigrator.sync(plugin, "menus/" + menu);
 
         File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".yml"));
         if (files == null)
@@ -59,11 +67,11 @@ public class MenuManager {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             this.menus.put(id, parse(config));
         }
-        plugin.getLogger().info(this.menus.size() + " menü yüklendi.");
+        plugin.getLogger().info("Loaded " + this.menus.size() + " menus.");
     }
 
     private MenuDefinition parse(YamlConfiguration config) {
-        String title = config.getString("title", "Menü");
+        String title = config.getString("title", "Menu");
         int rows = Math.max(1, Math.min(6, config.getInt("rows", 3)));
         String type = config.getString("type", "normal");
         MenuDefinition definition = new MenuDefinition(title, rows, type);
@@ -71,6 +79,11 @@ public class MenuManager {
         definition.setUpgradeLore(config.getStringList("upgrade-lore"));
         definition.setUpgradeLoreMax(config.getStringList("upgrade-lore-max"));
         definition.setBlockValuesFormat(config.getString("block-values-format"));
+
+        definition.setHeadSlots(config.getIntegerList("head-slots"));
+        definition.setHeadName(config.getString("head-name"));
+        definition.setHeadLore(config.getStringList("head-lore"));
+        definition.setMemberFormat(config.getString("member-format"));
 
         ConfigurationSection items = config.getConfigurationSection("items");
         if (items != null) {
@@ -99,6 +112,10 @@ public class MenuManager {
     }
 
     public void open(Player player, String menuId, UUID islandId) {
+        open(player, menuId, islandId, 0);
+    }
+
+    public void open(Player player, String menuId, UUID islandId, int page) {
         MenuDefinition definition = this.menus.get(menuId.toLowerCase());
         if (definition == null)
             return;
@@ -107,12 +124,12 @@ public class MenuManager {
                 ? islandManager.getById(islandId)
                 : islandManager.getByMember(player.getUniqueId());
 
-        MenuHolder holder = new MenuHolder(menuId.toLowerCase(), island != null ? island.getUniqueId() : null);
+        MenuHolder holder = new MenuHolder(menuId.toLowerCase(),
+                island != null ? island.getUniqueId() : null, Math.max(0, page));
         Inventory inventory = Bukkit.createInventory(holder, definition.getRows() * 9,
                 color(apply(definition.getTitle(), player, island)));
         holder.setInventory(inventory);
 
-        // Statik öğeler
         for (MenuDefinition.Entry entry : definition.getEntries()) {
             if (entry.slot < 0 || entry.slot >= inventory.getSize())
                 continue;
@@ -121,11 +138,84 @@ public class MenuManager {
                 holder.getActions().put(entry.slot, entry.action);
         }
 
-        // Yükseltme menüsü: otomatik doldur
         if (definition.getType().equals("upgrades") && island != null)
             populateUpgrades(definition, inventory, holder, player, island);
 
+        if (definition.getType().equals("warp"))
+            populateWarp(definition, inventory, holder);
+
         player.openInventory(inventory);
+    }
+
+    private void populateWarp(MenuDefinition definition, Inventory inventory, MenuHolder holder) {
+        List<Integer> slots = definition.getHeadSlots();
+        if (slots.isEmpty())
+            return;
+
+        List<Island> islands = collectOnlineIslands();
+        int perPage = slots.size();
+        int pageCount = Math.max(1, (int) Math.ceil(islands.size() / (double) perPage));
+        int page = Math.min(holder.getPage(), pageCount - 1);
+        holder.setPageCount(pageCount);
+
+        int start = page * perPage;
+        for (int i = 0; i < perPage; i++) {
+            int index = start + i;
+            int slot = slots.get(i);
+            if (slot < 0 || slot >= inventory.getSize() || index >= islands.size())
+                continue;
+            Island island = islands.get(index);
+            inventory.setItem(slot, buildHead(definition, island));
+            holder.getActions().put(slot, "visit:" + island.getOwner());
+        }
+    }
+
+    private List<Island> collectOnlineIslands() {
+        Map<UUID, Island> unique = new LinkedHashMap<>();
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            Island island = islandManager.getByOwner(online.getUniqueId());
+            if (island != null)
+                unique.put(island.getUniqueId(), island);
+        }
+        List<Island> result = new ArrayList<>(unique.values());
+        result.sort((a, b) -> {
+            int byLevel = Integer.compare(b.getLevel(), a.getLevel());
+            return byLevel != 0 ? byLevel : Double.compare(b.getPoints(), a.getPoints());
+        });
+        return result;
+    }
+
+    private ItemStack buildHead(MenuDefinition definition, Island island) {
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(island.getOwner());
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        ItemMeta meta = head.getItemMeta();
+        if (meta instanceof SkullMeta) {
+            SkullMeta skull = (SkullMeta) meta;
+            skull.setOwningPlayer(owner);
+            skull.setDisplayName(color(applyHead(definition.getHeadName(), owner, island)));
+
+            List<String> lore = new ArrayList<>();
+            for (String line : definition.getHeadLore()) {
+                if (line.contains("{member_list}"))
+                    appendMembers(lore, definition.getMemberFormat(), island);
+                else
+                    lore.add(color(applyHead(line, owner, island)));
+            }
+            if (!lore.isEmpty())
+                skull.setLore(lore);
+            head.setItemMeta(skull);
+        }
+        return head;
+    }
+
+    private void appendMembers(List<String> lore, String format, Island island) {
+        lore.add(color(format
+                .replace("{player}", nameOf(island.getOwner()))
+                .replace("{role}", IslandRole.OWNER.getDisplayName())));
+        for (Map.Entry<UUID, IslandRole> entry : island.getMembers().entrySet())
+            lore.add(color(format
+                    .replace("{player}", nameOf(entry.getKey()))
+                    .replace("{role}", entry.getValue().getDisplayName())));
     }
 
     private void populateUpgrades(MenuDefinition definition, Inventory inventory, MenuHolder holder,
@@ -154,7 +244,7 @@ public class MenuManager {
                         : definition.getUpgradeLore();
                 List<String> lore = new ArrayList<>();
                 for (String line : template)
-                    lore.add(color(applyUpgrade(line, upgrade, current, next)));
+                    lore.add(color(applyUpgrade(line, upgrade, currentLevel, current, next)));
                 meta.setLore(lore);
                 item.setItemMeta(meta);
             }
@@ -172,6 +262,18 @@ public class MenuManager {
         }
         if (lower.startsWith("open:")) {
             open(player, action.substring(5).trim(), holder.getIslandId());
+            return;
+        }
+        if (lower.equals("page:next")) {
+            open(player, holder.getMenuId(), holder.getIslandId(), holder.getPage() + 1);
+            return;
+        }
+        if (lower.equals("page:prev")) {
+            open(player, holder.getMenuId(), holder.getIslandId(), Math.max(0, holder.getPage() - 1));
+            return;
+        }
+        if (lower.startsWith("visit:")) {
+            handleVisit(player, action.substring(6).trim());
             return;
         }
         if (lower.startsWith("command:")) {
@@ -192,9 +294,39 @@ public class MenuManager {
             handleUpgrade(player, holder, action.substring(8).trim());
             return;
         }
+        if (lower.equals("toggle-lock")) {
+            handleLockToggle(player, holder);
+            return;
+        }
+        if (lower.equals("delete-island")) {
+            handleDelete(player, holder);
+            return;
+        }
         if (lower.equals("time")) {
             handleTimeToggle(player, holder);
         }
+    }
+
+    private void handleVisit(Player player, String ownerRaw) {
+        UUID ownerId;
+        try {
+            ownerId = UUID.fromString(ownerRaw);
+        } catch (IllegalArgumentException error) {
+            return;
+        }
+        player.closeInventory();
+        plugin.getVisitService().visitOwner(player, ownerId);
+    }
+
+    private void handleDelete(Player player, MenuHolder holder) {
+        Island island = islandManager.getByOwner(player.getUniqueId());
+        if (island == null) {
+            plugin.getMessages().send(player, "no-island");
+            player.closeInventory();
+            return;
+        }
+        player.closeInventory();
+        islandManager.deleteIslandConfirmed(player, island);
     }
 
     private void handleFlagToggle(Player player, MenuHolder holder, String flagName) {
@@ -208,7 +340,18 @@ public class MenuManager {
         }
         island.setFlag(flag, !island.getFlag(flag));
         islandManager.saveAsync(island);
-        open(player, holder.getMenuId(), island.getUniqueId());
+        open(player, holder.getMenuId(), island.getUniqueId(), holder.getPage());
+    }
+
+    private void handleLockToggle(Player player, MenuHolder holder) {
+        Island island = resolveIsland(player, holder);
+        if (island == null || !island.hasPermission(player.getUniqueId(), IslandPermission.TOGGLE_SETTINGS)) {
+            plugin.getMessages().send(player, "no-island-permission");
+            return;
+        }
+        island.setLocked(!island.isLocked());
+        islandManager.saveAsync(island);
+        open(player, holder.getMenuId(), island.getUniqueId(), holder.getPage());
     }
 
     private void handleTimeToggle(Player player, MenuHolder holder) {
@@ -223,7 +366,7 @@ public class MenuManager {
         }
         island.setTime(island.getTime().next());
         islandManager.saveAsync(island);
-        open(player, holder.getMenuId(), island.getUniqueId());
+        open(player, holder.getMenuId(), island.getUniqueId(), holder.getPage());
     }
 
     private void handleUpgrade(Player player, MenuHolder holder, String key) {
@@ -239,23 +382,13 @@ public class MenuManager {
         UpgradeManager.PurchaseResult result =
                 plugin.getUpgradeManager().purchase(player, island, key, plugin.getEconomy());
         switch (result) {
-            case SUCCESS:
-                plugin.getMessages().send(player, "upgrade-success");
-                break;
-            case MAX_LEVEL:
-                plugin.getMessages().send(player, "upgrade-max");
-                break;
-            case NEED_ISLAND_LEVEL:
-                plugin.getMessages().send(player, "upgrade-need-level");
-                break;
-            case NEED_MONEY:
-                plugin.getMessages().send(player, "upgrade-need-money");
-                break;
-            default:
-                plugin.getMessages().send(player, "upgrade-failed");
-                break;
+            case SUCCESS: plugin.getMessages().send(player, "upgrade-success"); break;
+            case MAX_LEVEL: plugin.getMessages().send(player, "upgrade-max"); break;
+            case NEED_ISLAND_LEVEL: plugin.getMessages().send(player, "upgrade-need-level"); break;
+            case NEED_MONEY: plugin.getMessages().send(player, "upgrade-need-money"); break;
+            default: plugin.getMessages().send(player, "upgrade-failed"); break;
         }
-        open(player, holder.getMenuId(), island.getUniqueId());
+        open(player, holder.getMenuId(), island.getUniqueId(), holder.getPage());
     }
 
     private Island resolveIsland(Player player, MenuHolder holder) {
@@ -289,13 +422,19 @@ public class MenuManager {
         return item;
     }
 
-    private String applyUpgrade(String text, Upgrade upgrade, UpgradeLevel current, UpgradeLevel next) {
+    private String applyUpgrade(String text, Upgrade upgrade, int currentLevel, UpgradeLevel current, UpgradeLevel next) {
         if (text == null)
             return "";
+        boolean generator = upgrade.getType() == UpgradeType.GENERATOR;
+        String currentValue = current != null ? (generator ? "" + currentLevel : formatNumber(current.getValue())) : "-";
+        String nextValue = next != null ? (generator ? "" + next.getLevel() : formatNumber(next.getValue())) : "-";
+
         String result = text;
         result = result.replace("{upgrade}", upgrade.getDisplayName());
-        result = result.replace("{current}", current != null ? formatNumber(current.getValue()) : "-");
-        result = result.replace("{next}", next != null ? formatNumber(next.getValue()) : "-");
+        result = result.replace("{level}", String.valueOf(currentLevel));
+        result = result.replace("{next_level}", next != null ? String.valueOf(next.getLevel()) : "-");
+        result = result.replace("{current}", currentValue);
+        result = result.replace("{next}", nextValue);
         result = result.replace("{req_level}", next != null ? String.valueOf(next.getRequiredIslandLevel()) : "-");
         result = result.replace("{req_money}", next != null ? formatNumber(next.getRequiredMoney()) : "-");
         result = result.replace("{max}", String.valueOf(upgrade.getMaxLevel()));
@@ -314,16 +453,36 @@ public class MenuManager {
         result = result.replace("{members}", island != null ? String.valueOf(island.getMemberCount()) : "0");
         result = result.replace("{team_limit}", island != null
                 ? String.valueOf((int) plugin.getUpgradeManager().getValue(island, "team-limit", 4)) : "0");
-        result = result.replace("{time}", island != null ? island.getTime().getDisplayName() : IslandTime.NORMAL.getDisplayName());
+        result = result.replace("{time}", island != null ? island.getTime().getDisplayName() : "");
+        result = result.replace("{lock_state}", island != null && island.isLocked()
+                ? plugin.getMessages().get("visit-closed")
+                : plugin.getMessages().get("visit-open"));
 
         double next = island != null ? plugin.getLevelManager().pointsForNextLevel(island.getLevel()) : -1;
         result = result.replace("{next_points}", next < 0 ? "MAX" : formatNumber(next));
 
+        String flagOn = plugin.getMessages().get("flag-on");
+        String flagOff = plugin.getMessages().get("flag-off");
         for (IslandFlag flag : IslandFlag.values()) {
             boolean value = island != null ? island.getFlag(flag) : flag.getDefault();
-            result = result.replace("{flag_" + flag.name().toLowerCase() + "}", value ? "&aAÇIK" : "&cKAPALI");
+            result = result.replace("{flag_" + flag.name().toLowerCase() + "}", value ? flagOn : flagOff);
         }
-        return result;
+        return Placeholders.apply(player, result);
+    }
+
+    private String applyHead(String text, OfflinePlayer owner, Island island) {
+        if (text == null)
+            return "";
+        String result = text.replace("{owner}", nameOf(island.getOwner()));
+        result = result.replace("{level}", String.valueOf(island.getLevel()));
+        result = result.replace("{points}", formatNumber(island.getPoints()));
+        result = result.replace("{members}", String.valueOf(island.getMemberCount()));
+        result = result.replace("{team_limit}",
+                String.valueOf((int) plugin.getUpgradeManager().getValue(island, "team-limit", 4)));
+        result = result.replace("{lock_state}", island.isLocked()
+                ? plugin.getMessages().get("visit-closed")
+                : plugin.getMessages().get("visit-open"));
+        return Placeholders.apply(owner, result);
     }
 
     private String nameOf(UUID id) {

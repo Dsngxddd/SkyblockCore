@@ -1,12 +1,9 @@
-# ╔══════════════════════════════════════════════════════════════╗
-# ║  BLOK DEĞERLERİ                                                 ║
-# ║  Adaya konulan her blok, ada puanına buradaki değer kadar      ║
-# ║  ekler. Blok kırılınca aynı değer geri düşülür.                ║
-# ║  Puanlar ile seviye atlanır (bkz: levels.yml).                 ║
-# ║  Burada yazmayan bloklar 'default-value' kadar değer verir.    ║
-# ╚══════════════════════════════════════════════════════════════╝
+# Block values.
+# Each block placed on an island adds this many points; breaking it removes
+# the same amount. Points are used to level up (see levels.yml).
+# Blocks not listed here give 'default-value' points.
 
-# Listede olmayan bloklar için varsayılan puan (0 = puan vermez).
+# Default points for blocks that are not listed (0 = no points).
 default-value: 0.0
 
 values:
@@ -21,7 +18,6 @@ values:
   GOLD_BLOCK: 0.8
   COPPER_BLOCK: 0.6
   IRON_BLOCK: 0.6
-  # Aşağıdakileri istediğin gibi ekleyip çıkarabilirsin:
   AMETHYST_BLOCK: 0.4
   NETHERITE_SCRAP: 0.0
   STONE: 0.01
