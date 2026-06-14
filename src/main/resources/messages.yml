@@ -110,6 +110,10 @@ messages:
   flag-on: "&aON"
   flag-off: "&cOFF"
 
+  # Generic yes/no used by PlaceholderAPI placeholders
+  placeholder-yes: "&aYes"
+  placeholder-no: "&cNo"
+
   # Time
   time-no-permission: "&cYou don't have permission to change the island time (VIP+)."
 

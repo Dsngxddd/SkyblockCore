@@ -1,15 +1,27 @@
 # Island settings menu (/island settings).
+# Status lines use PlaceholderAPI placeholders provided by this plugin:
+#   %skyblock_flag_pvp%, %skyblock_flag_mob_spawning%, %skyblock_visitors%, ...
+# (The internal {flag_pvp} form still works too if you prefer it.)
 title: "&8Island Settings"
 rows: 4
 type: normal
 
 items:
+  info:
+    slot: 4
+    material: PLAYER_HEAD
+    name: "&aYour Island"
+    lore:
+      - "&7Level: &e%skyblock_level%"
+      - "&7Points: &e%skyblock_points%"
+      - "&7Members: &e%skyblock_members%&7/&e%skyblock_team_limit%"
+
   pvp:
     slot: 10
     material: DIAMOND_SWORD
     name: "&ePvP"
     lore:
-      - "&7Status: {flag_pvp}"
+      - "&7Status: %skyblock_flag_pvp%"
       - "&eClick to toggle."
     action: "flag:PVP"
 
@@ -18,7 +30,7 @@ items:
     material: ZOMBIE_HEAD
     name: "&eMob Spawning"
     lore:
-      - "&7Status: {flag_mob_spawning}"
+      - "&7Status: %skyblock_flag_mob_spawning%"
       - "&eClick to toggle."
     action: "flag:MOB_SPAWNING"
 
@@ -27,7 +39,7 @@ items:
     material: CREEPER_HEAD
     name: "&eCreeper Explosions"
     lore:
-      - "&7Status: {flag_creeper_explosion}"
+      - "&7Status: %skyblock_flag_creeper_explosion%"
       - "&eClick to toggle."
     action: "flag:CREEPER_EXPLOSION"
 
@@ -36,7 +48,7 @@ items:
     material: TNT
     name: "&eTNT Explosions"
     lore:
-      - "&7Status: {flag_tnt_explosion}"
+      - "&7Status: %skyblock_flag_tnt_explosion%"
       - "&eClick to toggle."
     action: "flag:TNT_EXPLOSION"
 
@@ -45,7 +57,7 @@ items:
     material: FLINT_AND_STEEL
     name: "&eFire Spread"
     lore:
-      - "&7Status: {flag_fire_spread}"
+      - "&7Status: %skyblock_flag_fire_spread%"
       - "&eClick to toggle."
     action: "flag:FIRE_SPREAD"
 
@@ -54,7 +66,7 @@ items:
     material: OAK_DOOR
     name: "&eVisitor Interaction"
     lore:
-      - "&7Status: {flag_visitor_interact}"
+      - "&7Status: %skyblock_flag_visitor_interact%"
       - "&7(Opening chests / picking up items)"
       - "&eClick to toggle."
     action: "flag:VISITOR_INTERACT"
@@ -64,7 +76,7 @@ items:
     material: IRON_DOOR
     name: "&eVisitors"
     lore:
-      - "&7Status: {lock_state}"
+      - "&7Status: %skyblock_visitors%"
       - "&7Open or close your island to visitors."
       - "&eClick to toggle."
     action: "toggle-lock"

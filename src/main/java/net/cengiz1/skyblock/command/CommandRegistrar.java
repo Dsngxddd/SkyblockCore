@@ -54,13 +54,18 @@ public final class CommandRegistrar {
         Map<String, Command> known = getKnownCommands(commandMap);
         if (known == null)
             return;
-        known.values().removeIf(value -> {
-            if (value instanceof IslandCommand) {
-                value.unregister(commandMap);
+        known.entrySet().removeIf(entry -> {
+            if (isOurCommand(entry.getValue())) {
+                entry.getValue().unregister(commandMap);
                 return true;
             }
             return false;
         });
+    }
+
+    private static boolean isOurCommand(Command command) {
+        return command != null
+                && command.getClass().getName().equals(IslandCommand.class.getName());
     }
 
     @SuppressWarnings("unchecked")
