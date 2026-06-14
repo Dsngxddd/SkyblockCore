@@ -90,6 +90,9 @@ public final class SkyblockPlugin extends JavaPlugin {
 
         ListenerRegistrar.registerAll(this);
 
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+            registerPlaceholders();
+
         CommandRegistrar.register(this);
 
         new IslandTimeTask(this, this.islandManager, this.settings)
@@ -107,6 +110,15 @@ public final class SkyblockPlugin extends JavaPlugin {
             this.islandManager.shutdown();
         if (this.storage != null)
             this.storage.close();
+    }
+
+    private void registerPlaceholders() {
+        try {
+            new net.cengiz1.skyblock.placeholder.SkyblockExpansion(this).register();
+            getLogger().info("Hooked into PlaceholderAPI (%skyblock_...%).");
+        } catch (Throwable error) {
+            getLogger().warning("Could not register PlaceholderAPI expansion: " + error.getMessage());
+        }
     }
 
     private EconomyHook setupEconomy() {
