@@ -167,7 +167,6 @@ public class SqlStorage implements Storage {
         if (warpsData != null && !warpsData.isEmpty()) {
             island.loadWarps(warpsData);
         } else {
-            // Migrate from the legacy single-warp columns.
             island.setWarpRaw(
                     result.getInt("has_warp") == 1,
                     result.getDouble("warp_x"),

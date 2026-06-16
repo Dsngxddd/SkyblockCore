@@ -108,6 +108,7 @@ public class IslandCommand extends Command {
             case "setwarp":   warps.setWarp(player, arg1); break;
             case "delwarp":   warps.delWarp(player, arg1); break;
 
+            case "admin":     admin.admin(player, args); break;
             case "proxy":     admin.proxyStatus(player); break;
             case "anaspawn":  admin.setGlobalSpawn(player); break;
 
@@ -122,9 +123,14 @@ public class IslandCommand extends Command {
         if (args.length == 0)
             return result;
 
+        boolean adminAccess = sender instanceof Player && ((Player) sender).hasPermission(AdminCommands.PERMISSION);
+
         if (args.length == 1) {
-            for (String key : this.resolver.keySet())
+            for (String key : this.resolver.keySet()) {
+                if (!adminAccess && isAdminOnly(this.resolver.get(key)))
+                    continue;
                 addIfMatch(result, args[0], key);
+            }
             return result;
         }
 
@@ -160,11 +166,41 @@ public class IslandCommand extends Command {
             case "rol":
                 completeRole(result, player, args);
                 break;
+            case "admin":
+                completeAdmin(result, player, args);
+                break;
             default:
                 if (args.length == 2 && isPlayerArg(canonical))
                     addOnlinePlayers(result, args[1]);
         }
         return result;
+    }
+
+    private boolean isAdminOnly(String canonical) {
+        return "admin".equals(canonical) || "proxy".equals(canonical) || "anaspawn".equals(canonical);
+    }
+
+    private void completeAdmin(List<String> result, Player player, String[] args) {
+        if (player == null || !admin.hasAccess(player))
+            return;
+        if (args.length == 2) {
+            for (String sub : AdminCommands.SUBCOMMANDS)
+                addIfMatch(result, args[1], sub);
+            return;
+        }
+        String sub = args[1].toLowerCase();
+        if (args.length == 3 && !sub.equals("reload") && !sub.equals("help")) {
+            addOnlinePlayers(result, args[2]);
+        } else if (args.length == 4) {
+            if (sub.equals("setowner") || sub.equals("role"))
+                addOnlinePlayers(result, args[3]);
+            else if (sub.equals("bank"))
+                addAll(result, args[3], "set", "add", "remove");
+            else if (sub.equals("points"))
+                addAll(result, args[3], "set", "add");
+        } else if (args.length == 5 && sub.equals("role")) {
+            addAssignableRoles(result, islandOfOwnerName(args[2]), args[4]);
+        }
     }
 
     private void completeRole(List<String> result, Player player, String[] args) {
@@ -175,7 +211,6 @@ public class IslandCommand extends Command {
         }
         String sub = args[1].toLowerCase();
         if (!RoleCommands.isManagement(sub)) {
-            // /is rol <player> <roleId>
             if (args.length == 3)
                 addAssignableRoles(result, ownIsland(player), args[2]);
             return;

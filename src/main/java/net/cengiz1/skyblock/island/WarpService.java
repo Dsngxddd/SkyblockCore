@@ -85,7 +85,7 @@ public class WarpService {
             plugin.getMessages().send(viewer, "warp-no-warp", "{player}", nameOf(island.getOwner()));
             return;
         }
-        // A specific warp was requested but does not exist on that island.
+
         if (warpName != null && !warpName.isEmpty() && !island.hasWarp(warpName)) {
             plugin.getMessages().send(viewer, "warp-unknown-name", "{name}", warpName);
             return;

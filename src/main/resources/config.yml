@@ -91,6 +91,7 @@ command:
     uyeler: ["members", "üyeler", "uyeler"]
     proxy: ["proxy", "status"]
     anaspawn: ["anaspawn", "setglobalspawn", "genelspawn"]
+    admin: ["admin", "yonet", "yönet"]
     yardim: ["help", "yardım", "yardim", "?"]
   # How long an invite stays valid, in seconds.
   invite-expire-seconds: 120
@@ -148,9 +149,9 @@ schematics:
       display-name: "&aClassic"
       file: classic.schem
       home-offset:
-        x: 0.5
-        y: 5.0
-        z: 0.5
+        x: 10.5
+        y: 11.0
+        z: 10.5
     desert:
       display-name: "&eDesert"
       file: desert.schem

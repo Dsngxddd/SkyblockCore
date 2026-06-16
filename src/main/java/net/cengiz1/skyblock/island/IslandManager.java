@@ -32,7 +32,6 @@ public class IslandManager {
 
     private final Map<UUID, Island> islandsById = new ConcurrentHashMap<>();
     private final Map<UUID, UUID> ownerToIsland = new ConcurrentHashMap<>();
-    // Grid cell (packed cellX/cellZ) -> island id, for O(1) getIslandAt lookups.
     private final Map<Long, UUID> cellToIsland = new ConcurrentHashMap<>();
 
     private UpgradeManager upgradeManager;
@@ -157,7 +156,7 @@ public class IslandManager {
         if (location.getWorld() == null)
             return null;
 
-        // Islands sit on a fixed grid, so the location maps to exactly one cell.
+
         int dist = Math.max(1, settings.getIslandDistance());
         int cellX = Math.round(location.getBlockX() / (float) dist);
         int cellZ = Math.round(location.getBlockZ() / (float) dist);

@@ -133,9 +133,6 @@ public class IslandCreationService {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     try {
                         if (natural) {
-                            // Spawn on the real, natural ground. Only build a small
-                            // platform when the centre is over water (ocean), so the
-                            // player never lands in the sea.
                             world.getChunkAt(centerX >> 4, centerZ >> 4).load(true);
                             org.bukkit.block.Block top = world.getHighestBlockAt(centerX, centerZ);
                             int surfaceY;

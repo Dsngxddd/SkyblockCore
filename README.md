@@ -94,6 +94,63 @@ upgrading never wipes your settings.
 
 The shaded jar lands in `build/libs/`.
 
+## Using SkyblockCore as a dependency
+
+The core is published through [JitPack](https://jitpack.io), so other plugins and
+modules can compile against its API.
+
+**Gradle**
+
+```gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // A release tag, or 'main-SNAPSHOT' for the latest commit on main.
+    compileOnly 'com.github.Dsngxddd:SkyblockCore:0.4.0'
+}
+```
+
+**Maven**
+
+```xml
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+
+<dependency>
+    <groupId>com.github.Dsngxddd</groupId>
+    <artifactId>SkyblockCore</artifactId>
+    <version>0.4.0</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+Use `compileOnly`/`provided`: the core runs as its own plugin on the server, so
+you only compile against it — you don't bundle it.
+
+**What the API gives you**
+
+- `SkyblockPlugin` — the entry point: `getIslandManager()`, `getRoleManager()`,
+  `getEconomy()`, `getTopService()`, `getWarpService()`, and more.
+- `Island` / `IslandManager` — islands, members, roles, points, bank, warps.
+- `RoleData` / `RoleResolver` — built-in and per-island custom roles.
+- `IslandCreateEvent` / `IslandDeleteEvent` — Bukkit events to listen for.
+- `SkyblockModule` + `ModuleContext` — write a drop-in module (see below).
+
+**Example** — read and modify an island from your own plugin:
+
+```java
+SkyblockPlugin core = (SkyblockPlugin) Bukkit.getPluginManager().getPlugin("Skyblock");
+Island island = core.getIslandManager().getByMember(player.getUniqueId());
+if (island != null) {
+    island.depositBank(1000);
+    core.getIslandManager().saveAsync(island);
+}
+```
+
 ## Modules
 
 Skyblock has its own add-on system, so you can bolt new mechanics onto islands

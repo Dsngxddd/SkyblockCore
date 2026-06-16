@@ -87,7 +87,7 @@ public class TopHologramManager implements Listener {
             entity.setSeeThrough(true);
             entity.setText(text);
         });
-        // Personal: hide it from everyone except the owner.
+
         for (Player other : Bukkit.getOnlinePlayers())
             if (!other.getUniqueId().equals(player.getUniqueId()))
                 other.hideEntity(plugin, display);

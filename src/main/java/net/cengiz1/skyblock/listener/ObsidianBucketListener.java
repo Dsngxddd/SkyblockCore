@@ -47,8 +47,6 @@ public class ObsidianBucketListener implements Listener {
         ItemStack hand = player.getInventory().getItemInMainHand();
         if (hand.getType() != Material.BUCKET)
             return;
-
-        // Respect island protection: only members who can break blocks may do this.
         Island island = islandManager.getIslandAt(block.getLocation());
         if (island != null && !island.hasPermission(player.getUniqueId(), IslandPermission.BLOCK_BREAK))
             return;

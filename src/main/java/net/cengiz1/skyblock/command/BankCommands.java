@@ -67,8 +67,6 @@ public class BankCommands extends CommandHandler {
                     "{amount}", formatNumber(amount), "{balance}", formatNumber(island.getBank()));
             return;
         }
-
-        // withdraw
         if (!island.hasPermission(player.getUniqueId(), IslandPermission.BANK)) {
             plugin.getMessages().send(player, "no-island-permission");
             return;
@@ -79,7 +77,6 @@ public class BankCommands extends CommandHandler {
         }
         double taken = island.withdrawBank(amount);
         if (!economy.deposit(player, taken)) {
-            // Refund the bank if the wallet deposit failed, so money is never lost.
             island.depositBank(taken);
             plugin.getMessages().send(player, "bank-failed");
             return;

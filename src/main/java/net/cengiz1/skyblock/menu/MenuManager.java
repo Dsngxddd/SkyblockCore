@@ -556,8 +556,7 @@ public class MenuManager {
         result = result.replace("{next_points}", next < 0 ? "MAX" : formatNumber(next));
 
         result = replaceFlags(result, island);
-        // Resolve our own %skyblock_...% tokens internally first so menus render
-        // even when PlaceholderAPI is missing; then let PAPI handle the rest.
+
         result = net.cengiz1.skyblock.placeholder.SkyblockPlaceholders.apply(plugin, player, result);
         return Placeholders.apply(player, result);
     }

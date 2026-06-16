@@ -33,7 +33,7 @@ public class RoleManager implements RoleResolver {
     public void reload() {
         this.builtins.clear();
 
-        // Seed the built-ins from the IslandRole enum (id, weight, default perms).
+
         for (IslandRole role : IslandRole.values()) {
             RoleData data = new RoleData(role.name().toLowerCase(), role.getDisplayName(), role.getWeight(), true);
             data.setPermissions(role.getPermissions());
@@ -76,7 +76,7 @@ public class RoleManager implements RoleResolver {
             }
         }
 
-        // Owner must always have every permission.
+
         RoleData owner = this.builtins.get(OWNER_ID);
         if (owner != null)
             owner.setPermissions(EnumSet.allOf(IslandPermission.class));

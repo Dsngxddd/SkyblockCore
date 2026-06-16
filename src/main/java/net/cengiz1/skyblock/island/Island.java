@@ -59,14 +59,10 @@ public class Island {
     private double bank;
 
     private final EnumMap<IslandFlag, Boolean> flags = new EnumMap<>(IslandFlag.class);
-    // Member UUID -> role id (lowercase). Built-in ids come from roles.yml,
-    // custom ids from this island's own customRoles map.
     private final Map<UUID, String> members = new ConcurrentHashMap<>();
     private final Map<String, RoleData> customRoles = new ConcurrentHashMap<>();
     private final Set<UUID> banned = ConcurrentHashMap.newKeySet();
     private final Map<String, Integer> upgrades = new ConcurrentHashMap<>();
-
-    // Shared resolver for built-in roles; set once at plugin enable.
     private static RoleResolver resolver;
 
     private boolean dirty;
@@ -506,7 +502,6 @@ public class Island {
         setRole(id, RoleManager.MEMBER_ID);
     }
 
-    // --- Per-island custom roles -------------------------------------------
 
     public RoleData getCustomRole(String id) {
         return id == null ? null : customRoles.get(id.toLowerCase());
@@ -533,7 +528,7 @@ public class Island {
         String key = id.toLowerCase();
         if (customRoles.remove(key) == null)
             return false;
-        // Demote any members holding the removed role back to the default member role.
+
         for (Map.Entry<UUID, String> entry : members.entrySet())
             if (key.equals(entry.getValue()))
                 entry.setValue(RoleManager.MEMBER_ID);

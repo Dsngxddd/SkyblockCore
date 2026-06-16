@@ -48,7 +48,7 @@ public class WarpSignListener implements Listener {
             return;
         }
 
-        // Optional warp name from the second line; falls back to the default.
+
         String warpName = sanitize(ChatColor.stripColor(event.getLine(1)));
         if (warpName == null)
             warpName = "ada";
