@@ -21,10 +21,9 @@ public class DimensionManager {
 
     private final SettingsManager settings;
     private final WorldManager worldManager;
-    private final SchematicService schematicService;
+    private SchematicService schematicService;
 
-    public DimensionManager(SettingsManager settings, WorldManager worldManager,
-                            SchematicService schematicService) {
+    public DimensionManager(SettingsManager settings, WorldManager worldManager) {
         this.settings = settings;
         this.worldManager = worldManager;
         this.schematicService = schematicService;
