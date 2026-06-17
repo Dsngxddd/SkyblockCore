@@ -107,7 +107,6 @@ repositories {
 }
 
 dependencies {
-    // A release tag, or 'main-SNAPSHOT' for the latest commit on main.
     compileOnly 'com.github.Dsngxddd:SkyblockCore:0.4.0'
 }
 ```

@@ -167,7 +167,7 @@ public class IslandManager {
         Island island = this.islandsById.get(islandId);
         if (island == null)
             return null;
-        if (!island.getWorldName().equals(location.getWorld().getName()))
+        if (!isIslandDimension(location.getWorld().getName(), island))
             return null;
         if (this.localServerName != null && island.getServerName() != null
                 && !island.getServerName().equals(this.localServerName))
@@ -179,6 +179,44 @@ public class IslandManager {
             return island;
 
         return null;
+    }
+
+    /**
+     * The island governing a location by grid cell, regardless of which of the
+     * three island dimensions (overworld / nether / end) it sits in. Used for
+     * portal routing and cross-dimension protection.
+     */
+    public Island getGoverningIsland(Location location) {
+        if (location.getWorld() == null)
+            return null;
+
+        int dist = Math.max(1, settings.getIslandDistance());
+        int cellX = Math.round(location.getBlockX() / (float) dist);
+        int cellZ = Math.round(location.getBlockZ() / (float) dist);
+        UUID islandId = this.cellToIsland.get(cellKey(cellX, cellZ));
+        if (islandId == null)
+            return null;
+
+        Island island = this.islandsById.get(islandId);
+        if (island == null)
+            return null;
+        if (this.localServerName != null && island.getServerName() != null
+                && !island.getServerName().equals(this.localServerName))
+            return null;
+
+        int half = getProtectionHalf(island);
+        if (Math.abs(location.getBlockX() - island.getCenterX()) <= half &&
+                Math.abs(location.getBlockZ() - island.getCenterZ()) <= half)
+            return island;
+
+        return null;
+    }
+
+    /** True if {@code worldName} is the island's overworld plot or its nether/end plot. */
+    private boolean isIslandDimension(String worldName, Island island) {
+        return worldName.equals(island.getWorldName())
+                || worldName.equals(settings.getNetherWorldName())
+                || worldName.equals(settings.getEndWorldName());
     }
 
     public void register(Island island) {
@@ -226,11 +264,18 @@ public class IslandManager {
         int centerY = island.getCenterY();
         int centerZ = island.getCenterZ();
 
+        World netherWorld = this.worldManager.getNetherWorld();
+        World endWorld = this.worldManager.getEndWorld();
+
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 
             boolean cleared = this.schematicService.clearRegion(world, centerX, centerZ, half);
             if (!cleared)
                 Bukkit.getScheduler().runTask(plugin, () -> clearPlatform(world, centerX, centerY, centerZ));
+            if (netherWorld != null)
+                this.schematicService.clearRegion(netherWorld, centerX, centerZ, half);
+            if (endWorld != null)
+                this.schematicService.clearRegion(endWorld, centerX, centerZ, half);
 
             this.storage.delete(island.getUniqueId());
             if (this.proxyManager != null && this.proxyManager.isEnabled())
@@ -239,7 +284,7 @@ public class IslandManager {
     }
 
     private boolean isWithin(Island island, Location location) {
-        if (location.getWorld() == null || !island.getWorldName().equals(location.getWorld().getName()))
+        if (location.getWorld() == null || !isIslandDimension(location.getWorld().getName(), island))
             return false;
         int half = getProtectionHalf(island);
         return Math.abs(location.getBlockX() - island.getCenterX()) <= half

@@ -23,6 +23,23 @@ public class SettingsManager {
     private int islandHeight;
     private int islandDistance;
     private int islandSize;
+
+    private boolean netherEnabled;
+    private String netherWorldName;
+    private int netherIslandHeight;
+    private String netherSchematic;
+    private double netherHomeX;
+    private double netherHomeY;
+    private double netherHomeZ;
+    private float netherHomeYaw;
+    private boolean endEnabled;
+    private String endWorldName;
+    private int endIslandHeight;
+    private String endSchematic;
+    private double endHomeX;
+    private double endHomeY;
+    private double endHomeZ;
+    private float endHomeYaw;
     private boolean borderEnabled;
     private String borderColor;
 
@@ -81,6 +98,24 @@ public class SettingsManager {
         this.islandHeight = config.getInt("world.island-height", 100);
         this.islandDistance = config.getInt("world.island-distance", 250);
         this.islandSize = config.getInt("world.island-size", 100);
+
+        this.netherEnabled = config.getBoolean("nether.enabled", true);
+        this.netherWorldName = config.getString("nether.world-name", "islands_nether");
+        this.netherIslandHeight = config.getInt("nether.island-height", 64);
+        this.netherSchematic = config.getString("nether.schematic", "");
+        this.netherHomeX = config.getDouble("nether.home-offset.x", 0.5);
+        this.netherHomeY = config.getDouble("nether.home-offset.y", 1.0);
+        this.netherHomeZ = config.getDouble("nether.home-offset.z", 0.5);
+        this.netherHomeYaw = (float) config.getDouble("nether.home-offset.yaw", 0);
+        this.endEnabled = config.getBoolean("end.enabled", true);
+        this.endWorldName = config.getString("end.world-name", "islands_the_end");
+        this.endIslandHeight = config.getInt("end.island-height", 64);
+        this.endSchematic = config.getString("end.schematic", "");
+        this.endHomeX = config.getDouble("end.home-offset.x", 0.5);
+        this.endHomeY = config.getDouble("end.home-offset.y", 1.0);
+        this.endHomeZ = config.getDouble("end.home-offset.z", 0.5);
+        this.endHomeYaw = (float) config.getDouble("end.home-offset.yaw", 0);
+
         this.borderEnabled = config.getBoolean("border.enabled", true);
         this.borderColor = config.getString("border.color", "BLUE").toUpperCase();
 
@@ -167,6 +202,70 @@ public class SettingsManager {
 
     public int getIslandSize() {
         return islandSize;
+    }
+
+    public boolean isNetherEnabled() {
+        return netherEnabled;
+    }
+
+    public String getNetherWorldName() {
+        return netherWorldName;
+    }
+
+    public int getNetherIslandHeight() {
+        return netherIslandHeight;
+    }
+
+    public String getNetherSchematic() {
+        return netherSchematic;
+    }
+
+    public double getNetherHomeX() {
+        return netherHomeX;
+    }
+
+    public double getNetherHomeY() {
+        return netherHomeY;
+    }
+
+    public double getNetherHomeZ() {
+        return netherHomeZ;
+    }
+
+    public float getNetherHomeYaw() {
+        return netherHomeYaw;
+    }
+
+    public boolean isEndEnabled() {
+        return endEnabled;
+    }
+
+    public String getEndWorldName() {
+        return endWorldName;
+    }
+
+    public int getEndIslandHeight() {
+        return endIslandHeight;
+    }
+
+    public String getEndSchematic() {
+        return endSchematic;
+    }
+
+    public double getEndHomeX() {
+        return endHomeX;
+    }
+
+    public double getEndHomeY() {
+        return endHomeY;
+    }
+
+    public double getEndHomeZ() {
+        return endHomeZ;
+    }
+
+    public float getEndHomeYaw() {
+        return endHomeYaw;
     }
 
     public boolean isBorderEnabled() {

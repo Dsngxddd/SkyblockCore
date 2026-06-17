@@ -27,6 +27,9 @@ public final class ListenerRegistrar {
         register(plugin, new WarpSignListener(plugin));
         register(plugin, new ObsidianBucketListener(plugin, islandManager));
 
+        if (plugin.getDimensionManager() != null)
+            register(plugin, new PortalListener(plugin));
+
         register(plugin, new BlockTrackListener(plugin, islandManager,
                 plugin.getBlockValueManager(), plugin.getLevelManager()));
         register(plugin, new UpgradeEffectListener(islandManager, plugin.getUpgradeManager()));

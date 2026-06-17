@@ -32,6 +32,7 @@ public final class SkyblockPlugin extends JavaPlugin {
     private MessageManager messages;
     private Storage storage;
     private WorldManager worldManager;
+    private net.cengiz1.skyblock.world.DimensionManager dimensionManager;
     private IslandManager islandManager;
     private MenuManager menuManager;
     private BlockValueManager blockValueManager;
@@ -75,6 +76,7 @@ public final class SkyblockPlugin extends JavaPlugin {
             this.worldManager.loadWorld();
         else
             getLogger().info("Island system disabled (island.enabled: false); running for modules only.");
+        this.dimensionManager = new net.cengiz1.skyblock.world.DimensionManager(this.settings, this.worldManager);
 
         this.islandManager = new IslandManager(this, this.settings, this.storage, this.worldManager);
         this.islandManager.loadAll();
@@ -182,6 +184,10 @@ public final class SkyblockPlugin extends JavaPlugin {
 
     public WorldManager getWorldManager() {
         return worldManager;
+    }
+
+    public net.cengiz1.skyblock.world.DimensionManager getDimensionManager() {
+        return dimensionManager;
     }
 
     public IslandManager getIslandManager() {

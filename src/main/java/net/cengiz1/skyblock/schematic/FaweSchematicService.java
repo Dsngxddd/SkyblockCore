@@ -96,6 +96,47 @@ public class FaweSchematicService implements SchematicService {
     }
 
     @Override
+    public boolean isAvailable() {
+        return this.available;
+    }
+
+    @Override
+    public boolean hasFile(String fileName) {
+        if (fileName == null || fileName.isBlank())
+            return false;
+        return new File(this.schematicsFolder, fileName).exists();
+    }
+
+    @Override
+    public boolean pasteFile(World bukkitWorld, int x, int y, int z, String fileName) {
+        if (!this.available || fileName == null || fileName.isBlank())
+            return false;
+
+        File file = new File(this.schematicsFolder, fileName);
+        if (!file.exists()) {
+            plugin.getLogger().warning("Schematic file not found: " + file.getName());
+            return false;
+        }
+
+        try {
+            Clipboard clipboard = loadClipboard("file:" + fileName.toLowerCase(), file);
+            com.sk89q.worldedit.world.World weWorld = BukkitAdapter.adapt(bukkitWorld);
+            try (EditSession session = WorldEdit.getInstance().newEditSessionBuilder().world(weWorld).build()) {
+                Operation operation = new ClipboardHolder(clipboard)
+                        .createPaste(session)
+                        .to(BlockVector3.at(x, y, z))
+                        .ignoreAirBlocks(false)
+                        .build();
+                Operations.complete(operation);
+            }
+            return true;
+        } catch (Throwable error) {
+            plugin.getLogger().warning("Schematic paste failed (" + fileName + "): " + error.getMessage());
+            return false;
+        }
+    }
+
+    @Override
     public boolean has(String key) {
         return key != null && this.definitions.containsKey(key.toLowerCase());
     }
@@ -153,11 +194,15 @@ public class FaweSchematicService implements SchematicService {
     }
 
     private Clipboard getClipboard(SchematicDefinition definition) throws IOException {
-        Clipboard cached = this.clipboards.get(definition.getKey());
+        File file = new File(this.schematicsFolder, definition.getFileName());
+        return loadClipboard(definition.getKey(), file);
+    }
+
+    private Clipboard loadClipboard(String cacheKey, File file) throws IOException {
+        Clipboard cached = this.clipboards.get(cacheKey);
         if (cached != null)
             return cached;
 
-        File file = new File(this.schematicsFolder, definition.getFileName());
         if (!file.exists())
             throw new FileNotFoundException("Schematic file not found: " + file.getName());
 
@@ -167,7 +212,7 @@ public class FaweSchematicService implements SchematicService {
 
         try (ClipboardReader reader = format.getReader(Files.newInputStream(file.toPath()))) {
             Clipboard clipboard = reader.read();
-            this.clipboards.put(definition.getKey(), clipboard);
+            this.clipboards.put(cacheKey, clipboard);
             return clipboard;
         }
     }

@@ -23,6 +23,20 @@ world:
   # Default island size, used when the size upgrade is not present.
   island-size: 100
 
+# Per-island Nether and End dimensions. Each island gets its OWN plot at the
+# same grid coordinates as its overworld island, in a dedicated void world, and
+# reaches it through real portals (a nether portal you build, then an end portal
+# waiting in your nether plot). The plots are generated the first time a player
+# travels there and live on the same backend server as the island, so this works
+nether:
+  enabled: true
+  world-name: islands_nether
+  island-height: 64
+end:
+  enabled: true
+  world-name: islands_the_end
+  island-height: 64
+
 # Per-player world border drawn around an island when a player enters it.
 border:
   enabled: true
