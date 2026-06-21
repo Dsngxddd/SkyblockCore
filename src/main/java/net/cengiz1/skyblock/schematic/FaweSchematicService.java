@@ -76,10 +76,14 @@ public class FaweSchematicService implements SchematicService {
                 double offsetY = entry.getDouble("home-offset.y", 1.0);
                 double offsetZ = entry.getDouble("home-offset.z", 0.5);
 
+                extractBundled(file);
                 this.definitions.put(key.toLowerCase(),
                         new SchematicDefinition(key.toLowerCase(), displayName, file, offsetX, offsetY, offsetZ));
             }
         }
+
+        extractBundled(plugin.getConfig().getString("nether.schematic", ""));
+        extractBundled(plugin.getConfig().getString("end.schematic", ""));
 
         if (this.defaultKey == null && !this.definitions.isEmpty())
             this.defaultKey = this.definitions.keySet().iterator().next();
@@ -88,6 +92,17 @@ public class FaweSchematicService implements SchematicService {
 
         if (!this.available)
             plugin.getLogger().warning("FastAsyncWorldEdit not found. Islands will use the fallback platform.");
+    }
+
+    private void extractBundled(String fileName) {
+        if (fileName == null || fileName.isBlank())
+            return;
+        File target = new File(this.schematicsFolder, fileName);
+        if (target.exists())
+            return;
+        if (plugin.getResource("schematics/" + fileName) == null)
+            return;
+        plugin.saveResource("schematics/" + fileName, false);
     }
 
     @Override

@@ -76,10 +76,12 @@ public final class SkyblockPlugin extends JavaPlugin {
             this.worldManager.loadWorld();
         else
             getLogger().info("Island system disabled (island.enabled: false); running for modules only.");
-        this.dimensionManager = new net.cengiz1.skyblock.world.DimensionManager(this.settings, this.worldManager);
 
         this.islandManager = new IslandManager(this, this.settings, this.storage, this.worldManager);
         this.islandManager.loadAll();
+
+        this.dimensionManager = new net.cengiz1.skyblock.world.DimensionManager(
+                this.settings, this.worldManager, this.islandManager.getSchematicService());
 
         this.blockValueManager = new BlockValueManager(this);
         this.levelManager = new LevelManager(this);

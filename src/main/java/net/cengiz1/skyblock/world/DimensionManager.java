@@ -6,24 +6,13 @@ import net.cengiz1.skyblock.schematic.SchematicService;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-/**
- * Resolves and lazily builds an island's per-dimension plots. The plots live at
- * the same grid coordinates as the overworld island, in the dedicated void
- * worlds, on the same backend server the island belongs to — so this needs no
- * extra cross-server state.
- *
- * Each dimension's starter plot can be supplied as a WorldEdit schematic file
- * (configured under {@code nether.schematic} / {@code end.schematic}); when no
- * file is configured (or FastAsyncWorldEdit is missing) it falls back to the
- * built-in {@link DimensionBuilder} that lays the plot out block-by-block.
- */
 public class DimensionManager {
 
     private final SettingsManager settings;
     private final WorldManager worldManager;
-    private SchematicService schematicService;
+    private final SchematicService schematicService;
 
-    public DimensionManager(SettingsManager settings, WorldManager worldManager) {
+    public DimensionManager(SettingsManager settings, WorldManager worldManager, SchematicService schematicService) {
         this.settings = settings;
         this.worldManager = worldManager;
         this.schematicService = schematicService;
@@ -46,7 +35,6 @@ public class DimensionManager {
         return world != null && world.getName().equals(settings.getEndWorldName());
     }
 
-    /** Builds the nether plot if it isn't there yet and returns its safe home. */
     public Location prepareNether(Island island) {
         World world = worldManager.getNetherWorld();
         if (world == null)
@@ -55,12 +43,22 @@ public class DimensionManager {
         int cz = island.getCenterZ();
         int cy = settings.getNetherIslandHeight();
         world.getChunkAt(cx >> 4, cz >> 4).load(true);
-        if (world.getBlockAt(cx, cy, cz).getType().isAir())
-            DimensionBuilder.buildNether(world, cx, cy, cz);
-        return new Location(world, cx + 0.5, cy + 1, cz + 0.5, 0f, 0f);
+
+        String file = settings.getNetherSchematic();
+        boolean useSchematic = canUseSchematic(file);
+
+        Location home = useSchematic
+                ? new Location(world, cx + settings.getNetherHomeX(), cy + settings.getNetherHomeY(),
+                        cz + settings.getNetherHomeZ(), settings.getNetherHomeYaw(), 0f)
+                : new Location(world, cx + 0.5, cy + 1, cz + 0.5, 0f, 0f);
+
+        if (!isBuilt(world, home, useSchematic, cx, cy, cz)) {
+            if (!(useSchematic && schematicService.pasteFile(world, cx, cy, cz, file)))
+                DimensionBuilder.buildNether(world, cx, cy, cz);
+        }
+        return home;
     }
 
-    /** Builds the end plot if it isn't there yet and returns its safe home. */
     public Location prepareEnd(Island island) {
         World world = worldManager.getEndWorld();
         if (world == null)
@@ -69,12 +67,22 @@ public class DimensionManager {
         int cz = island.getCenterZ();
         int cy = settings.getEndIslandHeight();
         world.getChunkAt(cx >> 4, cz >> 4).load(true);
-        if (world.getBlockAt(cx, cy, cz).getType().isAir())
-            DimensionBuilder.buildEnd(world, cx, cy, cz);
-        return new Location(world, cx + 0.5, cy + 1, cz + 3.5, 180f, 0f);
+
+        String file = settings.getEndSchematic();
+        boolean useSchematic = canUseSchematic(file);
+
+        Location home = useSchematic
+                ? new Location(world, cx + settings.getEndHomeX(), cy + settings.getEndHomeY(),
+                        cz + settings.getEndHomeZ(), settings.getEndHomeYaw(), 0f)
+                : new Location(world, cx + 0.5, cy + 1, cz + 3.5, 180f, 0f);
+
+        if (!isBuilt(world, home, useSchematic, cx, cy, cz)) {
+            if (!(useSchematic && schematicService.pasteFile(world, cx, cy, cz, file)))
+                DimensionBuilder.buildEnd(world, cx, cy, cz);
+        }
+        return home;
     }
 
-    /** The island's overworld home (where players return to from a portal). */
     public Location overworldHome(Island island) {
         World world = worldManager.getWorld();
         if (world == null)
@@ -82,5 +90,19 @@ public class DimensionManager {
         Location home = island.getHome(world);
         home.getChunk().load(true);
         return home;
+    }
+
+    private boolean canUseSchematic(String file) {
+        return schematicService != null
+                && file != null
+                && !file.isBlank()
+                && schematicService.isAvailable()
+                && schematicService.hasFile(file);
+    }
+
+    private boolean isBuilt(World world, Location home, boolean useSchematic, int cx, int cy, int cz) {
+        if (useSchematic)
+            return !world.getBlockAt(home.getBlockX(), home.getBlockY() - 1, home.getBlockZ()).getType().isAir();
+        return !world.getBlockAt(cx, cy, cz).getType().isAir();
     }
 }

@@ -32,10 +32,22 @@ nether:
   enabled: true
   world-name: islands_nether
   island-height: 64
+  schematic: nether.schem
+  home-offset:
+    x: 6.5
+    y: 3.0
+    z: 6.5
+    yaw: 0.0
 end:
   enabled: true
   world-name: islands_the_end
   island-height: 64
+  schematic: end.schem
+  home-offset:
+    x: 7.5
+    y: 4.0
+    z: 10.5
+    yaw: 180.0
 
 # Per-player world border drawn around an island when a player enters it.
 border:
