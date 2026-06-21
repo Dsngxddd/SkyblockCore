@@ -57,7 +57,7 @@ public class IslandCommand extends Command {
             return true;
         }
 
-        String canonical = this.resolver.getOrDefault(args[0].toLowerCase(), null);
+        String canonical = this.resolver.getOrDefault(args[0].toLowerCase(java.util.Locale.ROOT), null);
         if (canonical == null) {
             plugin.getMessages().send(player, "unknown-subcommand");
             return true;
@@ -134,7 +134,7 @@ public class IslandCommand extends Command {
             return result;
         }
 
-        String canonical = this.resolver.get(args[0].toLowerCase());
+        String canonical = this.resolver.get(args[0].toLowerCase(java.util.Locale.ROOT));
         if (canonical == null)
             return result;
         Player player = sender instanceof Player ? (Player) sender : null;
@@ -188,7 +188,7 @@ public class IslandCommand extends Command {
                 addIfMatch(result, args[1], sub);
             return;
         }
-        String sub = args[1].toLowerCase();
+        String sub = args[1].toLowerCase(java.util.Locale.ROOT);
         if (args.length == 3 && !sub.equals("reload") && !sub.equals("help")) {
             addOnlinePlayers(result, args[2]);
         } else if (args.length == 4) {
@@ -209,7 +209,7 @@ public class IslandCommand extends Command {
             addOnlinePlayers(result, args[1]);
             return;
         }
-        String sub = args[1].toLowerCase();
+        String sub = args[1].toLowerCase(java.util.Locale.ROOT);
         if (!RoleCommands.isManagement(sub)) {
             if (args.length == 3)
                 addAssignableRoles(result, ownIsland(player), args[2]);
@@ -277,7 +277,7 @@ public class IslandCommand extends Command {
     }
 
     private void addIfMatch(List<String> result, String prefix, String value) {
-        if (value.toLowerCase().startsWith(prefix.toLowerCase()))
+        if (value.toLowerCase(java.util.Locale.ROOT).startsWith(prefix.toLowerCase(java.util.Locale.ROOT)))
             result.add(value);
     }
 

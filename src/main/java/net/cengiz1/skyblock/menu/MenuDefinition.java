@@ -51,7 +51,7 @@ public class MenuDefinition {
     public MenuDefinition(String title, int rows, String type) {
         this.title = title;
         this.rows = rows;
-        this.type = type == null ? "normal" : type.toLowerCase();
+        this.type = type == null ? "normal" : type.toLowerCase(java.util.Locale.ROOT);
     }
 
     public String getTitle() {

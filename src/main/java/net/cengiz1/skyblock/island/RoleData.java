@@ -17,7 +17,7 @@ public class RoleData {
     private final boolean builtin;
 
     public RoleData(String id, String displayName, int weight, boolean builtin) {
-        this.id = id.toLowerCase();
+        this.id = id.toLowerCase(java.util.Locale.ROOT);
         this.displayName = displayName;
         this.weight = weight;
         this.builtin = builtin;

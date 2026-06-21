@@ -26,7 +26,7 @@ public class RoleCommands extends CommandHandler {
     public static boolean isManagement(String sub) {
         if (sub == null)
             return false;
-        switch (sub.toLowerCase()) {
+        switch (sub.toLowerCase(java.util.Locale.ROOT)) {
             case "olustur": case "oluştur": case "create": case "ekle":
             case "sil": case "delete": case "kaldir": case "kaldır":
             case "perm": case "izin":
@@ -38,7 +38,7 @@ public class RoleCommands extends CommandHandler {
     }
 
     public void handle(Player player, String[] args) {
-        String sub = args.length >= 2 ? args[1].toLowerCase() : null;
+        String sub = args.length >= 2 ? args[1].toLowerCase(java.util.Locale.ROOT) : null;
         if (sub == null) {
             plugin.getMessages().send(player, "role-usage");
             return;
@@ -165,7 +165,7 @@ public class RoleCommands extends CommandHandler {
     private boolean isOn(String arg) {
         if (arg == null)
             return false;
-        switch (arg.toLowerCase()) {
+        switch (arg.toLowerCase(java.util.Locale.ROOT)) {
             case "on": case "true": case "ac": case "aç": case "1": case "yes": case "evet":
                 return true;
             default:
@@ -176,7 +176,7 @@ public class RoleCommands extends CommandHandler {
     private String sanitizeId(String name) {
         if (name == null)
             return null;
-        String cleaned = name.trim().toLowerCase().replaceAll("[^a-z0-9_-]", "");
+        String cleaned = name.trim().toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9_-]", "");
         return cleaned.isEmpty() ? null : cleaned;
     }
 

@@ -34,7 +34,7 @@ public class AdminCommands extends CommandHandler {
             plugin.getMessages().send(player, "unknown-subcommand");
             return;
         }
-        String sub = args.length >= 2 ? args[1].toLowerCase() : "help";
+        String sub = args.length >= 2 ? args[1].toLowerCase(java.util.Locale.ROOT) : "help";
         switch (sub) {
             case "info":     adminInfo(player, arg(args, 2)); break;
             case "tp":       adminTp(player, arg(args, 2)); break;
@@ -130,7 +130,7 @@ public class AdminCommands extends CommandHandler {
             msg(player, "&cInvalid amount.");
             return;
         }
-        switch (op.toLowerCase()) {
+        switch (op.toLowerCase(java.util.Locale.ROOT)) {
             case "set":    island.setBank(amount); break;
             case "add":    island.depositBank(amount); break;
             case "remove":

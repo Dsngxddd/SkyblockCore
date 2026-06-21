@@ -55,7 +55,7 @@ public class SettingsCommands extends CommandHandler {
             plugin.getMessages().send(player, "border-usage");
             return;
         }
-        String color = colorArg.trim().toUpperCase();
+        String color = colorArg.trim().toUpperCase(java.util.Locale.ROOT);
         if (!color.equals("BLUE") && !color.equals("GREEN") && !color.equals("RED")) {
             plugin.getMessages().send(player, "border-invalid");
             return;

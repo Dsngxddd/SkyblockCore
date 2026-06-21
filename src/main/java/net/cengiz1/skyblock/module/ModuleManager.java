@@ -39,7 +39,7 @@ public final class ModuleManager {
             return;
         }
 
-        File[] jars = modulesFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
+        File[] jars = modulesFolder.listFiles((dir, name) -> name.toLowerCase(java.util.Locale.ROOT).endsWith(".jar"));
         if (jars == null || jars.length == 0) {
             plugin.getLogger().info("No modules found in " + modulesFolder.getName() + "/.");
             return;

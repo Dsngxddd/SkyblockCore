@@ -35,7 +35,7 @@ public class RoleManager implements RoleResolver {
 
 
         for (IslandRole role : IslandRole.values()) {
-            RoleData data = new RoleData(role.name().toLowerCase(), role.getDisplayName(), role.getWeight(), true);
+            RoleData data = new RoleData(role.name().toLowerCase(java.util.Locale.ROOT), role.getDisplayName(), role.getWeight(), true);
             data.setPermissions(role.getPermissions());
             this.builtins.put(data.getId(), data);
         }
@@ -97,7 +97,7 @@ public class RoleManager implements RoleResolver {
 
     @Override
     public RoleData builtin(String id) {
-        return id == null ? null : builtins.get(id.toLowerCase());
+        return id == null ? null : builtins.get(id.toLowerCase(java.util.Locale.ROOT));
     }
 
     @Override

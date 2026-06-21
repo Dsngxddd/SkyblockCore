@@ -80,7 +80,7 @@ public class WarpCommands extends CommandHandler {
     private String sanitize(String name) {
         if (name == null)
             return null;
-        String cleaned = name.trim().toLowerCase().replaceAll("[^a-z0-9_-]", "");
+        String cleaned = name.trim().toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9_-]", "");
         return cleaned.isEmpty() ? null : cleaned;
     }
 }

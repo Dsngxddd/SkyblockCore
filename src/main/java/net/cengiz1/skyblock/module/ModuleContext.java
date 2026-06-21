@@ -83,7 +83,7 @@ public final class ModuleContext {
             logger.severe("Could not access the CommandMap; command '" + command.getName() + "' not registered.");
             return;
         }
-        commandMap.register(moduleName.toLowerCase(), command);
+        commandMap.register(moduleName.toLowerCase(java.util.Locale.ROOT), command);
         commands.add(command);
         syncCommands();
     }

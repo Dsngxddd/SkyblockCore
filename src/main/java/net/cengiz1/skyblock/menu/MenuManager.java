@@ -63,12 +63,12 @@ public class MenuManager {
         for (String menu : DEFAULT_MENUS)
             ConfigMigrator.sync(plugin, "menus/" + menu);
 
-        File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".yml"));
+        File[] files = folder.listFiles((dir, name) -> name.toLowerCase(java.util.Locale.ROOT).endsWith(".yml"));
         if (files == null)
             return;
 
         for (File file : files) {
-            String id = file.getName().substring(0, file.getName().length() - 4).toLowerCase();
+            String id = file.getName().substring(0, file.getName().length() - 4).toLowerCase(java.util.Locale.ROOT);
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             this.menus.put(id, parse(config));
         }
@@ -119,7 +119,7 @@ public class MenuManager {
     }
 
     public boolean has(String menuId) {
-        return menuId != null && this.menus.containsKey(menuId.toLowerCase());
+        return menuId != null && this.menus.containsKey(menuId.toLowerCase(java.util.Locale.ROOT));
     }
 
     public void open(Player player, String menuId, UUID islandId) {
@@ -127,7 +127,7 @@ public class MenuManager {
     }
 
     public void open(Player player, String menuId, UUID islandId, int page) {
-        MenuDefinition definition = this.menus.get(menuId.toLowerCase());
+        MenuDefinition definition = this.menus.get(menuId.toLowerCase(java.util.Locale.ROOT));
         if (definition == null)
             return;
 
@@ -135,7 +135,7 @@ public class MenuManager {
                 ? islandManager.getById(islandId)
                 : islandManager.getByMember(player.getUniqueId());
 
-        MenuHolder holder = new MenuHolder(menuId.toLowerCase(),
+        MenuHolder holder = new MenuHolder(menuId.toLowerCase(java.util.Locale.ROOT),
                 island != null ? island.getUniqueId() : null, Math.max(0, page));
         Inventory inventory = Bukkit.createInventory(holder, definition.getRows() * 9,
                 color(apply(definition.getTitle(), player, island)));
@@ -385,7 +385,7 @@ public class MenuManager {
     }
 
     public void handleAction(Player player, MenuHolder holder, String action) {
-        String lower = action.toLowerCase();
+        String lower = action.toLowerCase(java.util.Locale.ROOT);
         if (lower.equals("close")) {
             player.closeInventory();
             return;
@@ -656,7 +656,7 @@ public class MenuManager {
     }
 
     private String prettyName(String enumName) {
-        String[] parts = enumName.toLowerCase().split("_");
+        String[] parts = enumName.toLowerCase(java.util.Locale.ROOT).split("_");
         StringBuilder builder = new StringBuilder();
         for (String part : parts) {
             if (builder.length() > 0)

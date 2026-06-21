@@ -8,7 +8,7 @@ public enum UpgradeType {
         if (name == null)
             return VALUE;
         try {
-            return valueOf(name.trim().toUpperCase());
+            return valueOf(name.trim().toUpperCase(java.util.Locale.ROOT));
         } catch (IllegalArgumentException error) {
             return VALUE;
         }

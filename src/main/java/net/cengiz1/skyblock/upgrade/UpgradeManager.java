@@ -55,7 +55,7 @@ public class UpgradeManager {
             int slot = section.getInt("slot", 0);
             UpgradeType type = UpgradeType.fromString(section.getString("type", "value"));
 
-            Upgrade upgrade = new Upgrade(key.toLowerCase(), displayName, icon, slot, type);
+            Upgrade upgrade = new Upgrade(key.toLowerCase(java.util.Locale.ROOT), displayName, icon, slot, type);
 
             ConfigurationSection levels = section.getConfigurationSection("levels");
             if (levels != null) {
@@ -98,7 +98,7 @@ public class UpgradeManager {
     }
 
     public Upgrade get(String key) {
-        return key == null ? null : this.upgrades.get(key.toLowerCase());
+        return key == null ? null : this.upgrades.get(key.toLowerCase(java.util.Locale.ROOT));
     }
 
     public Map<String, Upgrade> getUpgrades() {

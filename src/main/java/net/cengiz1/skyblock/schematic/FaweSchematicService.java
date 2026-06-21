@@ -80,8 +80,8 @@ public class FaweSchematicService implements SchematicService {
                 double offsetZ = entry.getDouble("home-offset.z", 0.5);
 
                 extractBundled(file);
-                this.definitions.put(key.toLowerCase(),
-                        new SchematicDefinition(key.toLowerCase(), displayName, file, icon, offsetX, offsetY, offsetZ));
+                this.definitions.put(key.toLowerCase(java.util.Locale.ROOT),
+                        new SchematicDefinition(key.toLowerCase(java.util.Locale.ROOT), displayName, file, icon, offsetX, offsetY, offsetZ));
             }
         }
 
@@ -91,7 +91,7 @@ public class FaweSchematicService implements SchematicService {
         if (this.defaultKey == null && !this.definitions.isEmpty())
             this.defaultKey = this.definitions.keySet().iterator().next();
         else if (this.defaultKey != null)
-            this.defaultKey = this.defaultKey.toLowerCase();
+            this.defaultKey = this.defaultKey.toLowerCase(java.util.Locale.ROOT);
 
         if (!this.available)
             plugin.getLogger().warning("FastAsyncWorldEdit not found. Islands will use the fallback platform.");
@@ -137,7 +137,7 @@ public class FaweSchematicService implements SchematicService {
         }
 
         try {
-            Clipboard clipboard = loadClipboard("file:" + fileName.toLowerCase(), file);
+            Clipboard clipboard = loadClipboard("file:" + fileName.toLowerCase(java.util.Locale.ROOT), file);
             com.sk89q.worldedit.world.World weWorld = BukkitAdapter.adapt(bukkitWorld);
             try (EditSession session = WorldEdit.getInstance().newEditSessionBuilder().world(weWorld).build()) {
                 Operation operation = new ClipboardHolder(clipboard)
@@ -156,7 +156,7 @@ public class FaweSchematicService implements SchematicService {
 
     @Override
     public boolean has(String key) {
-        return key != null && this.definitions.containsKey(key.toLowerCase());
+        return key != null && this.definitions.containsKey(key.toLowerCase(java.util.Locale.ROOT));
     }
 
     @Override
@@ -171,7 +171,7 @@ public class FaweSchematicService implements SchematicService {
 
     @Override
     public SchematicDefinition get(String key) {
-        return key == null ? null : this.definitions.get(key.toLowerCase());
+        return key == null ? null : this.definitions.get(key.toLowerCase(java.util.Locale.ROOT));
     }
 
     @Override

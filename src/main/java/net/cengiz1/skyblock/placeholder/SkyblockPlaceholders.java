@@ -31,7 +31,7 @@ public final class SkyblockPlaceholders {
             return "";
 
         Island island = plugin.getIslandManager().getByMember(player.getUniqueId());
-        String key = params.toLowerCase();
+        String key = params.toLowerCase(java.util.Locale.ROOT);
 
         if (key.equals("has_island"))
             return bool(plugin, island != null);

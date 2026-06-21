@@ -23,7 +23,7 @@ public final class CommandRegistrar {
         for (Map.Entry<String, List<String>> entry : settings.getSubcommandAliases().entrySet()) {
             String canonical = entry.getKey();
             for (String alias : entry.getValue())
-                resolver.put(alias.toLowerCase(), canonical);
+                resolver.put(alias.toLowerCase(java.util.Locale.ROOT), canonical);
         }
 
         IslandCommand command = new IslandCommand(plugin,
@@ -36,7 +36,7 @@ public final class CommandRegistrar {
         }
 
         unregister(plugin, commandMap);
-        commandMap.register(plugin.getName().toLowerCase(), command);
+        commandMap.register(plugin.getName().toLowerCase(java.util.Locale.ROOT), command);
         syncCommands();
         plugin.getLogger().info("Registered island command: /" + settings.getCommandName()
                 + " (" + String.join(", ", settings.getCommandAliases()) + ")");

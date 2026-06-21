@@ -27,7 +27,7 @@ public enum IslandPermission {
         if (name == null)
             return null;
         try {
-            return valueOf(name.trim().toUpperCase());
+            return valueOf(name.trim().toUpperCase(java.util.Locale.ROOT));
         } catch (IllegalArgumentException error) {
             return null;
         }

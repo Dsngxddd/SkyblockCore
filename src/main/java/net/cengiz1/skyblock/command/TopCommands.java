@@ -19,7 +19,7 @@ public class TopCommands extends CommandHandler {
 
     public void handle(Player player, String arg) {
         if (arg != null) {
-            String a = arg.toLowerCase();
+            String a = arg.toLowerCase(java.util.Locale.ROOT);
             if (a.equals("holo") || a.equals("hologram") || a.equals("takip")) {
                 if (plugin.getTopHologramManager() == null) {
                     plugin.getMessages().send(player, "unknown-subcommand");

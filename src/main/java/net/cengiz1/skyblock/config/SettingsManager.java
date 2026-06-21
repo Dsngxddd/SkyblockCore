@@ -94,7 +94,7 @@ public class SettingsManager {
         this.islandEnabled = config.getBoolean("island.enabled", true);
         this.clearInventoryOnLeave = config.getBoolean("island.clear-inventory-on-leave", false);
         this.worldName = config.getString("world.name", "islands");
-        this.worldGenerator = config.getString("world.generator", "void").toLowerCase();
+        this.worldGenerator = config.getString("world.generator", "void").toLowerCase(java.util.Locale.ROOT);
         this.islandHeight = config.getInt("world.island-height", 100);
         this.islandDistance = config.getInt("world.island-distance", 250);
         this.islandSize = config.getInt("world.island-size", 100);
@@ -117,7 +117,7 @@ public class SettingsManager {
         this.endHomeYaw = (float) config.getDouble("end.home-offset.yaw", 0);
 
         this.borderEnabled = config.getBoolean("border.enabled", true);
-        this.borderColor = config.getString("border.color", "BLUE").toUpperCase();
+        this.borderColor = config.getString("border.color", "BLUE").toUpperCase(java.util.Locale.ROOT);
 
         this.spawnWorld = config.getString("spawn.world", "");
         this.spawnX = config.getDouble("spawn.x", 0.5);
@@ -129,7 +129,7 @@ public class SettingsManager {
         this.maxConcurrentCreations = Math.max(1, config.getInt("creation.max-concurrent", 3));
         this.creationThreads = Math.max(1, config.getInt("creation.threads", 3));
 
-        this.commandName = config.getString("command.name", "ada").toLowerCase();
+        this.commandName = config.getString("command.name", "ada").toLowerCase(java.util.Locale.ROOT);
         this.commandAliases = config.getStringList("command.aliases");
         this.inviteExpireSeconds = Math.max(10, config.getInt("command.invite-expire-seconds", 120));
         this.economyEnabled = config.getBoolean("economy.enabled", true);
@@ -144,11 +144,11 @@ public class SettingsManager {
                 List<String> aliases = subs.getStringList(key);
                 if (aliases.isEmpty())
                     aliases.add(key);
-                this.subcommandAliases.put(key.toLowerCase(), aliases);
+                this.subcommandAliases.put(key.toLowerCase(java.util.Locale.ROOT), aliases);
             }
         }
 
-        this.storageType = config.getString("storage.type", "sqlite").toLowerCase();
+        this.storageType = config.getString("storage.type", "sqlite").toLowerCase(java.util.Locale.ROOT);
         this.host = config.getString("storage.mysql.host", "localhost");
         this.port = config.getInt("storage.mysql.port", 3306);
         this.database = config.getString("storage.mysql.database", "skyblock");

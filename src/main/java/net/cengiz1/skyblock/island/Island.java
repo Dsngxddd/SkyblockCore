@@ -245,7 +245,7 @@ public class Island {
     }
 
     private static String key(String name) {
-        return name == null ? "" : name.trim().toLowerCase();
+        return name == null ? "" : name.trim().toLowerCase(java.util.Locale.ROOT);
     }
 
     public String serializeWarps() {
@@ -432,7 +432,7 @@ public class Island {
 
     private RoleData resolveRole(String id) {
         if (id != null) {
-            RoleData custom = customRoles.get(id.toLowerCase());
+            RoleData custom = customRoles.get(id.toLowerCase(java.util.Locale.ROOT));
             if (custom != null)
                 return custom;
             if (resolver != null) {
@@ -448,7 +448,7 @@ public class Island {
     public RoleData resolveRoleById(String id) {
         if (id == null)
             return null;
-        RoleData custom = customRoles.get(id.toLowerCase());
+        RoleData custom = customRoles.get(id.toLowerCase(java.util.Locale.ROOT));
         if (custom != null)
             return custom;
         return resolver != null ? resolver.builtin(id) : null;
@@ -494,7 +494,7 @@ public class Island {
             return;
         if (roleId.equalsIgnoreCase(RoleManager.VISITOR_ID))
             return;
-        this.members.put(id, roleId.toLowerCase());
+        this.members.put(id, roleId.toLowerCase(java.util.Locale.ROOT));
         this.dirty = true;
     }
 
@@ -504,11 +504,11 @@ public class Island {
 
 
     public RoleData getCustomRole(String id) {
-        return id == null ? null : customRoles.get(id.toLowerCase());
+        return id == null ? null : customRoles.get(id.toLowerCase(java.util.Locale.ROOT));
     }
 
     public boolean hasCustomRole(String id) {
-        return id != null && customRoles.containsKey(id.toLowerCase());
+        return id != null && customRoles.containsKey(id.toLowerCase(java.util.Locale.ROOT));
     }
 
     public java.util.Collection<RoleData> getCustomRoles() {
@@ -525,7 +525,7 @@ public class Island {
     public boolean removeCustomRole(String id) {
         if (id == null)
             return false;
-        String key = id.toLowerCase();
+        String key = id.toLowerCase(java.util.Locale.ROOT);
         if (customRoles.remove(key) == null)
             return false;
 
@@ -570,11 +570,11 @@ public class Island {
     }
 
     public int getUpgradeLevel(String key) {
-        return this.upgrades.getOrDefault(key.toLowerCase(), 1);
+        return this.upgrades.getOrDefault(key.toLowerCase(java.util.Locale.ROOT), 1);
     }
 
     public void setUpgradeLevel(String key, int level) {
-        this.upgrades.put(key.toLowerCase(), Math.max(1, level));
+        this.upgrades.put(key.toLowerCase(java.util.Locale.ROOT), Math.max(1, level));
         this.dirty = true;
     }
 
@@ -624,7 +624,7 @@ public class Island {
                 continue;
             try {
                 UUID uuid = UUID.fromString(part.substring(0, idx).trim());
-                String roleId = part.substring(idx + 1).trim().toLowerCase();
+                String roleId = part.substring(idx + 1).trim().toLowerCase(java.util.Locale.ROOT);
                 if (!roleId.isEmpty() && !roleId.equals(RoleManager.VISITOR_ID))
                     this.members.put(uuid, roleId);
             } catch (IllegalArgumentException ignored) {
@@ -714,7 +714,7 @@ public class Island {
             if (kv.length != 2)
                 continue;
             try {
-                this.upgrades.put(kv[0].toLowerCase(), Integer.parseInt(kv[1].trim()));
+                this.upgrades.put(kv[0].toLowerCase(java.util.Locale.ROOT), Integer.parseInt(kv[1].trim()));
             } catch (NumberFormatException ignored) {
             }
         }

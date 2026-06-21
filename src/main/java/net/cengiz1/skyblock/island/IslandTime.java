@@ -37,7 +37,7 @@ public enum IslandTime {
         if (name == null)
             return NORMAL;
         try {
-            return valueOf(name.trim().toUpperCase());
+            return valueOf(name.trim().toUpperCase(java.util.Locale.ROOT));
         } catch (IllegalArgumentException error) {
             return NORMAL;
         }
