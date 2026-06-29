@@ -11,16 +11,18 @@ public class MenuDefinition {
         public final int slot;
         public final Material material;
         public final int amount;
+        public final int customModelData;
         public final String name;
         public final List<String> lore;
         public final String action;
         public final boolean blockValues;
 
-        public Entry(int slot, Material material, int amount, String name,
+        public Entry(int slot, Material material, int amount, int customModelData, String name,
                      List<String> lore, String action, boolean blockValues) {
             this.slot = slot;
             this.material = material;
             this.amount = amount;
+            this.customModelData = customModelData;
             this.name = name;
             this.lore = lore;
             this.action = action;

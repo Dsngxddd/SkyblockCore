@@ -28,6 +28,9 @@ head-lore:
 # Format of each member line inside {member_list}.
 member-format: "&8• &f{player} &7{role}"
 
+# Any item may add  custom-model-data: <number>  (e.g. custom-model-data: 1001)
+# to use a resource pack / ItemsAdder / Oraxen model instead of the default
+# texture. Omit it (or use -1) to keep the vanilla look.
 items:
   warps:
     slot: 4

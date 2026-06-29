@@ -107,12 +107,13 @@ public class MenuManager {
                 if (material == null)
                     material = Material.STONE;
                 int amount = entry.getInt("amount", 1);
+                int customModelData = entry.getInt("custom-model-data", -1);
                 String name = entry.getString("name", "");
                 List<String> lore = entry.getStringList("lore");
                 String action = entry.getString("action", null);
                 boolean blockValues = entry.getBoolean("block-values", false);
                 definition.getEntries().add(
-                        new MenuDefinition.Entry(slot, material, amount, name, lore, action, blockValues));
+                        new MenuDefinition.Entry(slot, material, amount, customModelData, name, lore, action, blockValues));
             }
         }
         return definition;
@@ -562,9 +563,16 @@ public class MenuManager {
 
             if (!lore.isEmpty())
                 meta.setLore(lore);
+            applyModelData(meta, entry.customModelData);
             item.setItemMeta(meta);
         }
         return item;
+    }
+
+    @SuppressWarnings("deprecation")
+    private void applyModelData(ItemMeta meta, int customModelData) {
+        if (meta != null && customModelData >= 0)
+            meta.setCustomModelData(customModelData);
     }
 
     private String applyUpgrade(String text, Upgrade upgrade, int currentLevel, UpgradeLevel current, UpgradeLevel next) {
