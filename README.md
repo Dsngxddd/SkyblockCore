@@ -1,6 +1,6 @@
 # uxmSkyblock
 
-[![JitPack](https://jitpack.io/v/Dsngxddd/SkyblockCore.svg)](https://jitpack.io/#Dsngxddd/SkyblockCore)
+[![JitPack](https://jitpack.io/v/UXPLIMA/uxmSkyblock.svg)](https://jitpack.io/#UXPLIMA/uxmSkyblock)
 [![Java 21](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/)
 [![Paper 1.21.4](https://img.shields.io/badge/Paper-1.21.4-brightgreen.svg)](https://papermc.io/)
 [![Cross-server](https://img.shields.io/badge/cross--server-ready-success.svg)](#cross-server-networks)
@@ -221,7 +221,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.Dsngxddd:SkyblockCore:0.4.0'
+    compileOnly 'com.github.UXPLIMA:uxmSkyblock:0.4.0'
 }
 ```
 
@@ -234,8 +234,8 @@ dependencies {
 </repository>
 
 <dependency>
-    <groupId>com.github.Dsngxddd</groupId>
-    <artifactId>SkyblockCore</artifactId>
+    <groupId>com.github.UXPLIMA</groupId>
+    <artifactId>uxmSkyblock</artifactId>
     <version>0.4.0</version>
     <scope>provided</scope>
 </dependency>
@@ -306,7 +306,7 @@ uxmSkyblock is built and maintained by two developers:
 | | Role |
 | --- | --- |
 | [**@UXPLIMA**](https://github.com/UXPLIMA) (siracozmen01) | Maintainer — networking, API, tooling |
-| [**@Dsngxddd**](https://github.com/Dsngxddd) (cengiz1x) | Maintainer — core island systems, gameplay |
+| [**@UXPLIMA**](https://github.com/UXPLIMA) (cengiz1x) | Maintainer — core island systems, gameplay |
 
 ## Contributing
 
