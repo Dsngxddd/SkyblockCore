@@ -36,6 +36,12 @@ public final class UxmSkyblockPlaceholders {
         if (key.equals("has_island"))
             return bool(plugin, island != null);
 
+        if (key.equals("total_islands") || key.equals("island_count"))
+            return String.valueOf(plugin.getIslandManager().getAllIslands().size());
+
+        if (key.startsWith("top_"))
+            return resolveTop(plugin, key.substring("top_".length()));
+
         if (island == null)
             return noIsland(plugin, key);
 
@@ -46,9 +52,14 @@ public final class UxmSkyblockPlaceholders {
             return flagState(plugin, island.getFlag(flag));
         }
 
+        if (key.startsWith("upgrade_"))
+            return String.valueOf(island.getUpgradeLevel(key.substring("upgrade_".length())));
+
         switch (key) {
             case "level":
                 return String.valueOf(island.getLevel());
+            case "next_level":
+                return String.valueOf(island.getLevel() + 1);
             case "points":
                 return formatNumber(island.getPoints());
             case "bank":
@@ -57,16 +68,36 @@ public final class UxmSkyblockPlaceholders {
                 double next = plugin.getLevelManager().pointsForNextLevel(island.getLevel());
                 return next < 0 ? "MAX" : formatNumber(next);
             }
+            case "points_needed": {
+                double next = plugin.getLevelManager().pointsForNextLevel(island.getLevel());
+                if (next < 0)
+                    return "0";
+                return formatNumber(Math.max(0, next - island.getPoints()));
+            }
+            case "progress":
+                return String.valueOf(progressPercent(plugin, island));
+            case "progress_bar":
+                return progressBar(progressPercent(plugin, island));
             case "members":
                 return String.valueOf(island.getMemberCount());
             case "team_limit":
                 return String.valueOf((int) plugin.getUpgradeManager().getValue(island, "team-limit", 4));
+            case "team_free": {
+                int limit = (int) plugin.getUpgradeManager().getValue(island, "team-limit", 4);
+                return String.valueOf(Math.max(0, limit - island.getMemberCount()));
+            }
             case "owner":
                 return nameOf(island);
             case "name":
                 return island.getName() != null ? island.getName() : nameOf(island);
             case "rank":
                 return island.getRole(player.getUniqueId()).getDisplayName();
+            case "top": {
+                int top = plugin.getTopService().getRank(island);
+                return top < 0 ? "-" : String.valueOf(top);
+            }
+            case "is_owner":
+                return bool(plugin, island.isOwner(player.getUniqueId()));
             case "visitors":
                 return island.isLocked()
                         ? plugin.getMessages().get("visit-closed")
@@ -75,6 +106,18 @@ public final class UxmSkyblockPlaceholders {
                 return bool(plugin, island.isLocked());
             case "has_warp":
                 return bool(plugin, island.hasWarp());
+            case "warps":
+                return String.valueOf(island.getWarpCount());
+            case "banned":
+                return String.valueOf(island.getBanned().size());
+            case "border":
+                return island.getBorderColor() != null ? island.getBorderColor() : "";
+            case "time":
+                return island.getTime().name();
+            case "grid_index":
+                return String.valueOf(island.getGridIndex());
+            case "id":
+                return island.getUniqueId().toString();
             case "server":
                 return island.getServerName() != null ? island.getServerName() : "";
             default:
@@ -107,26 +150,120 @@ public final class UxmSkyblockPlaceholders {
     private static String noIsland(UxmSkyblockPlugin plugin, String key) {
         switch (key) {
             case "level":
+            case "next_level":
             case "members":
             case "team_limit":
+            case "team_free":
             case "points":
             case "next_points":
+            case "points_needed":
+            case "progress":
             case "bank":
+            case "warps":
+            case "banned":
+            case "grid_index":
                 return "0";
+            case "top":
+                return "-";
             case "owner":
             case "name":
             case "rank":
             case "server":
+            case "border":
+            case "time":
+            case "id":
+            case "progress_bar":
                 return "";
             case "visitors":
             case "locked":
             case "has_warp":
+            case "is_owner":
                 return bool(plugin, false);
             default:
                 if (key.startsWith("flag_"))
                     return flagState(plugin, false);
+                if (key.startsWith("upgrade_"))
+                    return "0";
                 return "";
         }
+    }
+
+    private static String resolveTop(UxmSkyblockPlugin plugin, String rest) {
+        String positionPart;
+        String field;
+        int underscore = rest.indexOf('_');
+        if (underscore < 0) {
+            positionPart = rest;
+            field = "name";
+        } else {
+            positionPart = rest.substring(0, underscore);
+            field = rest.substring(underscore + 1);
+        }
+
+        int position;
+        try {
+            position = Integer.parseInt(positionPart);
+        } catch (NumberFormatException error) {
+            return null;
+        }
+        if (position < 1)
+            return null;
+
+        Island island = plugin.getTopService().getAt(position);
+        if (island == null)
+            return emptyTop(field);
+
+        switch (field) {
+            case "name":
+                return island.getName() != null ? island.getName() : nameOf(island);
+            case "owner":
+                return nameOf(island);
+            case "level":
+                return String.valueOf(island.getLevel());
+            case "points":
+            case "point":
+                return formatNumber(island.getPoints());
+            case "bank":
+                return formatNumber(island.getBank());
+            case "members":
+                return String.valueOf(island.getMemberCount());
+            default:
+                return null;
+        }
+    }
+
+    private static String emptyTop(String field) {
+        switch (field) {
+            case "level":
+            case "points":
+            case "point":
+            case "bank":
+            case "members":
+                return "0";
+            default:
+                return "-";
+        }
+    }
+
+    private static int progressPercent(UxmSkyblockPlugin plugin, Island island) {
+        double current = plugin.getLevelManager().requiredPoints(island.getLevel());
+        double next = plugin.getLevelManager().requiredPoints(island.getLevel() + 1);
+        if (next == Double.MAX_VALUE || next <= current)
+            return 100;
+        double ratio = (island.getPoints() - current) / (next - current);
+        if (ratio < 0)
+            ratio = 0;
+        if (ratio > 1)
+            ratio = 1;
+        return (int) Math.round(ratio * 100);
+    }
+
+    private static String progressBar(int percent) {
+        int filled = Math.round(percent / 10f);
+        StringBuilder bar = new StringBuilder();
+        for (int i = 0; i < 10; i++)
+            bar.append(i < filled ? "&a▮" : "&7▯");
+        return bar.toString();
     }
 
     private static String flagState(UxmSkyblockPlugin plugin, boolean value) {
